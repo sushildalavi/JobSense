@@ -1,0 +1,79 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+.next/
+out/
+build/
+*.egg-info/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Poetry
+poetry.lock
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V4
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Turbo
+.turbo/
+
+# Testing
+coverage/
+.nyc_output/
+htmlcov/
+
+# Docker volumes
+.postgres-data/
+.redis-data/
+
+# Uploads / storage
+uploads/
+storage/
+
+# Alembic (keep versions tracked, but not compiled stuff)
+*.pyc
+
+# TypeScript
+*.tsbuildinfo
+
+# Sentry
+.sentryclirc
