@@ -22,7 +22,7 @@ export const API_ROUTES = {
   // Applications
   APPLICATIONS: '/api/v1/applications',
   APPLICATION_BY_ID: (id: string) => `/api/v1/applications/${id}`,
-  APPLICATION_STATUS: (id: string) => `/api/v1/applications/${id}/status`,
+  APPLICATION_STATUS: (id: string) => `/api/v1/applications/${id}/transition`,
   APPLICATION_EVENTS: (id: string) => `/api/v1/applications/${id}/events`,
 
   // Resumes
