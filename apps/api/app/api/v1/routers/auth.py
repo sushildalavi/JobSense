@@ -21,6 +21,7 @@ from app.schemas.auth import (
     RegisterRequest,
     TokenResponse,
 )
+from app.schemas.user import UserResponse
 from app.services.auth_service import AuthService
 
 logger = structlog.get_logger(__name__)
@@ -120,3 +121,11 @@ async def reset_password(
     service = AuthService(db)
     await service.reset_password(data.token, data.new_password)
     return {"message": "Password has been reset successfully."}
+
+
+@router.get("/me", response_model=UserResponse)
+async def get_me(
+    current_user: User = Depends(get_current_active_user),
+) -> UserResponse:
+    """Return the currently authenticated user. Alias for /users/me."""
+    return UserResponse.model_validate(current_user)
