@@ -1,13 +1,14 @@
 """
 Email Pydantic v2 schemas.
 """
+
 from __future__ import annotations
 
 import uuid
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, model_config
+from pydantic import BaseModel
 
 from app.models.email import EmailClassification
 

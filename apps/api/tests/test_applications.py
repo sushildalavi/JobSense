@@ -3,14 +3,15 @@ Application lifecycle tests.
 
 Covers: create, list, status transition.
 """
+
 from __future__ import annotations
 
 import uuid
+
 import pytest
 from httpx import AsyncClient
 
-from app.models.application import Application, ApplicationStatus
-
+from app.models.application import ApplicationStatus
 
 pytestmark = pytest.mark.asyncio
 
@@ -18,6 +19,7 @@ pytestmark = pytest.mark.asyncio
 # ---------------------------------------------------------------------------
 # Helper
 # ---------------------------------------------------------------------------
+
 
 async def _create_application(
     client: AsyncClient,
@@ -37,6 +39,7 @@ async def _create_application(
 # ---------------------------------------------------------------------------
 # Create
 # ---------------------------------------------------------------------------
+
 
 class TestCreateApplication:
     async def test_create_application_success(
@@ -97,6 +100,7 @@ class TestCreateApplication:
 # List
 # ---------------------------------------------------------------------------
 
+
 class TestListApplications:
     async def test_list_applications_empty(
         self,
@@ -143,6 +147,7 @@ class TestListApplications:
         """Pagination limits the number of results."""
         # Create a second job so we can have multiple applications
         from app.models.job import Job, JobSource, JobStatus
+
         source = JobSource(name=f"src-app-{uuid.uuid4().hex[:6]}", connector_type="test")
         async_session.add(source)
         await async_session.flush()
@@ -168,6 +173,7 @@ class TestListApplications:
 # ---------------------------------------------------------------------------
 # Status Transition
 # ---------------------------------------------------------------------------
+
 
 class TestTransitionStatus:
     async def test_transition_discovered_to_shortlisted(

@@ -1,6 +1,7 @@
 """
 Email intelligence ORM models: EmailThread, ParsedEmail.
 """
+
 from __future__ import annotations
 
 import enum
@@ -8,7 +9,8 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import DateTime, Enum as SAEnum, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import Enum as SAEnum
 from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
@@ -17,8 +19,8 @@ from app.core.database import Base
 from app.models.base import TimestampMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
-    from app.models.user import User
     from app.models.application import Application
+    from app.models.user import User
 
 
 class EmailClassification(str, enum.Enum):
@@ -52,9 +54,7 @@ class EmailThread(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     )
 
     # Gmail identifiers
-    thread_id: Mapped[str] = mapped_column(
-        String(255), nullable=False, unique=True, index=True
-    )
+    thread_id: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
     subject: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     participants: Mapped[Optional[list]] = mapped_column(JSON, default=list)
 
@@ -76,9 +76,7 @@ class EmailThread(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     application: Mapped[Optional[Application]] = relationship(
         "Application", back_populates="email_threads"
     )
-    parsed_emails: Mapped[list[ParsedEmail]] = relationship(
-        "ParsedEmail", back_populates="thread"
-    )
+    parsed_emails: Mapped[list[ParsedEmail]] = relationship("ParsedEmail", back_populates="thread")
 
     def __repr__(self) -> str:
         return f"<EmailThread thread_id={self.thread_id!r} class={self.classification!r}>"
@@ -94,9 +92,7 @@ class ParsedEmail(Base):
 
     __tablename__ = "parsed_emails"
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     thread_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("email_threads.id", ondelete="CASCADE"),
@@ -111,16 +107,12 @@ class ParsedEmail(Base):
     )
 
     # Gmail message identifier
-    message_id: Mapped[str] = mapped_column(
-        String(255), nullable=False, unique=True, index=True
-    )
+    message_id: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
 
     subject: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     sender_email: Mapped[Optional[str]] = mapped_column(String(320), nullable=True)
     sender_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    received_at: Mapped[Optional[datetime]] = mapped_column(
-        DateTime(timezone=True), nullable=True
-    )
+    received_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
 
     raw_body: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     cleaned_body: Mapped[Optional[str]] = mapped_column(Text, nullable=True)

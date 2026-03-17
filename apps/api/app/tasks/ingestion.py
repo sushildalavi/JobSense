@@ -1,15 +1,14 @@
 """
 Job ingestion Celery tasks.
 """
+
 from __future__ import annotations
 
 import asyncio
-import hashlib
 import uuid
 from typing import Any, Dict, Optional
 
 import structlog
-from celery import shared_task
 
 from app.tasks.celery_app import celery_app
 
@@ -52,23 +51,19 @@ def sync_apify_jobs(
 async def _sync_apify_jobs_async(
     source_id: Optional[str], user_id: Optional[str]
 ) -> Dict[str, Any]:
-    from app.core.database import AsyncSessionLocal
-    from app.models.job import JobSource
     from sqlalchemy import select
+
+    from app.core.database import AsyncSessionLocal
     from app.integrations.apify.client import ApifyClient
-    from app.integrations.apify.normalizer import normalize_apify_job
+    from app.models.job import JobSource
 
     async with AsyncSessionLocal() as db:
         if source_id:
-            result = await db.execute(
-                select(JobSource).where(JobSource.id == uuid.UUID(source_id))
-            )
+            result = await db.execute(select(JobSource).where(JobSource.id == uuid.UUID(source_id)))
             sources = [result.scalar_one_or_none()]
             sources = [s for s in sources if s is not None]
         else:
-            result = await db.execute(
-                select(JobSource).where(JobSource.is_active.is_(True))
-            )
+            result = await db.execute(select(JobSource).where(JobSource.is_active.is_(True)))
             sources = list(result.scalars().all())
 
         total_ingested = 0
@@ -90,6 +85,7 @@ async def _sync_apify_jobs_async(
                     total_ingested += 1
 
                 from datetime import datetime, timezone
+
                 source.last_synced_at = datetime.now(timezone.utc)
                 db.add(source)
 
@@ -123,13 +119,12 @@ def process_raw_job(
         raise self.retry(exc=exc)
 
 
-async def _process_raw_job_async(
-    raw_job_data: Dict[str, Any], source_id: str
-) -> Dict[str, Any]:
-    from app.core.database import AsyncSessionLocal
-    from app.models.job import Job
+async def _process_raw_job_async(raw_job_data: Dict[str, Any], source_id: str) -> Dict[str, Any]:
     from sqlalchemy import select
+
+    from app.core.database import AsyncSessionLocal
     from app.integrations.apify.normalizer import normalize_apify_job
+    from app.models.job import Job
 
     normalized = normalize_apify_job(raw_job_data, source_id=source_id)
     if normalized is None:

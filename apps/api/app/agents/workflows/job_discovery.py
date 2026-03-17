@@ -4,6 +4,7 @@ Job discovery LangGraph workflow.
 State graph:
   trigger_ingestion → normalize_jobs → deduplicate → compute_matches → notify
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, TypedDict
@@ -15,6 +16,7 @@ logger = structlog.get_logger(__name__)
 
 
 # ── State ─────────────────────────────────────────────────────────────────────
+
 
 class JobDiscoveryState(TypedDict, total=False):
     # Inputs
@@ -31,6 +33,7 @@ class JobDiscoveryState(TypedDict, total=False):
 
 
 # ── Nodes ─────────────────────────────────────────────────────────────────────
+
 
 async def trigger_ingestion(state: JobDiscoveryState) -> JobDiscoveryState:
     """Trigger Apify job ingestion for configured sources."""
@@ -65,6 +68,7 @@ async def normalize_jobs(state: JobDiscoveryState) -> JobDiscoveryState:
 async def deduplicate(state: JobDiscoveryState) -> JobDiscoveryState:
     """Trigger deduplication pass."""
     from app.tasks.ingestion import run_deduplication
+
     run_deduplication.delay()
     state["dedup_count"] = 0  # actual count updated by dedup task
     return state
@@ -75,10 +79,12 @@ async def compute_matches(state: JobDiscoveryState) -> JobDiscoveryState:
     user_id = state.get("user_id")
     if user_id:
         from app.tasks.matching import compute_job_matches_for_user
+
         compute_job_matches_for_user.delay(user_id)
         state["match_count"] = 1
     else:
         from app.tasks.matching import recompute_all_matches
+
         recompute_all_matches.delay()
         state["match_count"] = -1  # all users
     return state
@@ -97,6 +103,7 @@ def notify(state: JobDiscoveryState) -> JobDiscoveryState:
 
 
 # ── Graph ─────────────────────────────────────────────────────────────────────
+
 
 def build_job_discovery_graph() -> StateGraph:
     graph = StateGraph(JobDiscoveryState)

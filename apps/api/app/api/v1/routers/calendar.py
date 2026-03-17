@@ -1,6 +1,7 @@
 """
 Calendar event endpoints.
 """
+
 from __future__ import annotations
 
 import uuid
@@ -11,7 +12,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.dependencies import get_current_active_user, get_db, get_pagination, PaginationParams
+from app.api.v1.dependencies import (
+    PaginationParams,
+    get_current_active_user,
+    get_db,
+    get_pagination,
+)
 from app.models.calendar import CalendarEvent
 from app.models.user import User
 from app.schemas.calendar import CalendarEventCreate, CalendarEventResponse, CalendarEventUpdate
@@ -120,5 +126,6 @@ async def sync_calendar(
 ) -> dict:
     """Trigger Google Calendar sync for the current user."""
     from app.tasks.calendar_tasks import sync_google_calendar
+
     sync_google_calendar.delay(str(current_user.id))
     return {"message": "Calendar sync triggered"}

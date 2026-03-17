@@ -4,6 +4,7 @@ Email classification LangGraph workflow.
 State graph:
   preprocess → classify → extract_entities → link_to_application → update_status
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, Optional, TypedDict
@@ -20,6 +21,7 @@ logger = structlog.get_logger(__name__)
 
 
 # ── State ─────────────────────────────────────────────────────────────────────
+
 
 class EmailClassificationState(TypedDict, total=False):
     # Inputs
@@ -39,6 +41,7 @@ class EmailClassificationState(TypedDict, total=False):
 
 # ── Nodes ─────────────────────────────────────────────────────────────────────
 
+
 def preprocess(state: EmailClassificationState) -> EmailClassificationState:
     """Clean and truncate email content for LLM processing."""
     subject = state.get("subject") or ""
@@ -46,6 +49,7 @@ def preprocess(state: EmailClassificationState) -> EmailClassificationState:
 
     # Strip HTML tags naively
     import re
+
     cleaned_body = re.sub(r"<[^>]+>", " ", body)
     cleaned_body = re.sub(r"\s+", " ", cleaned_body).strip()
 
@@ -83,9 +87,7 @@ async def extract_entities(state: EmailClassificationState) -> EmailClassificati
         return state
 
     agent = BaseAgent()
-    prompt = EMAIL_ENTITY_EXTRACTION_PROMPT_V1.format(
-        email_content=state.get("cleaned_text") or ""
-    )
+    prompt = EMAIL_ENTITY_EXTRACTION_PROMPT_V1.format(email_content=state.get("cleaned_text") or "")
     try:
         data = await agent.invoke_json(prompt)
         state["entity_data"] = data
@@ -124,6 +126,7 @@ def update_status(state: EmailClassificationState) -> EmailClassificationState:
     raw_dt = entity_data.get("interview_datetime")
     if raw_dt:
         from dateutil import parser as date_parser
+
         try:
             interview_dt = date_parser.parse(raw_dt)
         except Exception:
@@ -142,6 +145,7 @@ def update_status(state: EmailClassificationState) -> EmailClassificationState:
 
 
 # ── Graph ─────────────────────────────────────────────────────────────────────
+
 
 def build_email_classification_graph() -> StateGraph:
     graph = StateGraph(EmailClassificationState)

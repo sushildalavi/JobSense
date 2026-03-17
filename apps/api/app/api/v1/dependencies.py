@@ -1,9 +1,9 @@
 """
 FastAPI dependency injection — database session, auth, pagination.
 """
+
 from __future__ import annotations
 
-import uuid
 from typing import AsyncGenerator, Optional
 
 import redis.asyncio as aioredis
@@ -25,6 +25,7 @@ oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login", aut
 
 # ── Database session ──────────────────────────────────────────────────────────
 
+
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """Yield an async SQLAlchemy session."""
     async with AsyncSessionLocal() as session:
@@ -39,12 +40,14 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 # ── Redis ─────────────────────────────────────────────────────────────────────
 
+
 async def get_redis(request: Request) -> aioredis.Redis:
     """Return the shared Redis client from app state."""
     return request.app.state.redis
 
 
 # ── Auth ──────────────────────────────────────────────────────────────────────
+
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
@@ -102,6 +105,7 @@ async def optional_current_user(
 
 
 # ── Pagination ─────────────────────────────────────────────────────────────────
+
 
 class PaginationParams:
     """Reusable pagination dependency."""

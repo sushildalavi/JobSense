@@ -1,6 +1,7 @@
 """
 Calendar Celery tasks.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -39,14 +40,13 @@ def create_interview_event(self, parsed_email_id: str, user_id: str) -> Dict[str
         raise self.retry(exc=exc)
 
 
-async def _create_interview_event_async(
-    parsed_email_id: str, user_id: str
-) -> Dict[str, Any]:
-    from app.core.database import AsyncSessionLocal
-    from app.models.email import ParsedEmail
-    from app.models.calendar import CalendarEvent, CalendarEventStatus
-    from app.integrations.google_calendar.client import GoogleCalendarClient
+async def _create_interview_event_async(parsed_email_id: str, user_id: str) -> Dict[str, Any]:
     from sqlalchemy import select
+
+    from app.core.database import AsyncSessionLocal
+    from app.integrations.google_calendar.client import GoogleCalendarClient
+    from app.models.calendar import CalendarEvent, CalendarEventStatus
+    from app.models.email import ParsedEmail
 
     async with AsyncSessionLocal() as db:
         result = await db.execute(
@@ -66,9 +66,7 @@ async def _create_interview_event_async(
 
         # Check for existing event for this email
         existing = await db.execute(
-            select(CalendarEvent).where(
-                CalendarEvent.parsed_email_id == parsed.id
-            )
+            select(CalendarEvent).where(CalendarEvent.parsed_email_id == parsed.id)
         )
         if existing.scalar_one_or_none() is not None:
             return {"skipped": True, "reason": "event already exists"}
@@ -88,9 +86,8 @@ async def _create_interview_event_async(
 
         # Try to push to Google Calendar
         from app.models.user import User
-        user_result = await db.execute(
-            select(User).where(User.id == uuid.UUID(user_id))
-        )
+
+        user_result = await db.execute(select(User).where(User.id == uuid.UUID(user_id)))
         user = user_result.scalar_one_or_none()
         if user and user.google_tokens:
             try:
@@ -129,17 +126,16 @@ def sync_google_calendar(self, user_id: str) -> Dict[str, Any]:
 
 
 async def _sync_calendar_async(user_id: str) -> Dict[str, Any]:
-    from app.core.database import AsyncSessionLocal
-    from app.models.user import User
-    from app.models.calendar import CalendarEvent, CalendarEventStatus
-    from app.integrations.google_calendar.client import GoogleCalendarClient
+
     from sqlalchemy import select
-    from datetime import datetime, timezone
+
+    from app.core.database import AsyncSessionLocal
+    from app.integrations.google_calendar.client import GoogleCalendarClient
+    from app.models.calendar import CalendarEvent, CalendarEventStatus
+    from app.models.user import User
 
     async with AsyncSessionLocal() as db:
-        result = await db.execute(
-            select(User).where(User.id == uuid.UUID(user_id))
-        )
+        result = await db.execute(select(User).where(User.id == uuid.UUID(user_id)))
         user = result.scalar_one_or_none()
         if user is None or not user.google_tokens:
             return {"skipped": True, "reason": "no google tokens"}
@@ -154,9 +150,7 @@ async def _sync_calendar_async(user_id: str) -> Dict[str, Any]:
                 continue
 
             existing = await db.execute(
-                select(CalendarEvent).where(
-                    CalendarEvent.google_event_id == google_event_id
-                )
+                select(CalendarEvent).where(CalendarEvent.google_event_id == google_event_id)
             )
             existing_event = existing.scalar_one_or_none()
 
@@ -169,6 +163,7 @@ async def _sync_calendar_async(user_id: str) -> Dict[str, Any]:
                 continue
 
             from dateutil import parser as date_parser
+
             try:
                 start_datetime = date_parser.parse(start_dt)
                 end_datetime = date_parser.parse(end_dt)

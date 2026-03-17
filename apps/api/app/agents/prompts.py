@@ -1,11 +1,13 @@
 """
 Versioned prompt templates for all AI workflows.
 """
+
 from __future__ import annotations
 
 # ── Job Matching ───────────────────────────────────────────────────────────────
 
-JOB_MATCH_PROMPT_V1 = """You are an expert career coach and recruiter. Analyze how well a candidate's profile matches a job posting.
+JOB_MATCH_PROMPT_V1 = """You are an expert career coach and recruiter.
+Analyze how well a candidate's profile matches a job posting.
 
 # Candidate Profile
 Skills: {skills}
@@ -37,7 +39,8 @@ Respond ONLY with valid JSON, no markdown fences.
 
 # ── Resume Tailoring ───────────────────────────────────────────────────────────
 
-RESUME_TAILORING_PROMPT_V1 = """You are an expert resume writer. Tailor the candidate's resume for a specific job posting.
+RESUME_TAILORING_PROMPT_V1 = """You are an expert resume writer.
+Tailor the candidate's resume for a specific job posting.
 DO NOT invent experience or skills. Only rephrase, reorder, and emphasize existing content.
 
 # Job Posting
@@ -69,7 +72,8 @@ Resume:
 Return a JSON object with these fields:
 - contact: {{name, email, phone, location, linkedin_url, github_url, portfolio_url}}
 - summary: string or null
-- work_experience: list of {{company, title, start_date, end_date, is_current, location, bullets, technologies}}
+- work_experience:
+  list of {{company, title, start_date, end_date, is_current, location, bullets, technologies}}
 - education: list of {{institution, degree, field_of_study, start_date, end_date, gpa}}
 - projects: list of {{name, description, technologies, bullets, url}}
 - skills: {{languages, frameworks, tools, databases, cloud, other}}
@@ -82,7 +86,8 @@ Respond ONLY with valid JSON, no markdown fences.
 
 # ── Email Classification ───────────────────────────────────────────────────────
 
-EMAIL_CLASSIFICATION_PROMPT_V1 = """You are a recruiting email classifier. Classify this email thread.
+EMAIL_CLASSIFICATION_PROMPT_V1 = """You are a recruiting email classifier.
+Classify this email thread.
 
 Email Subject: {subject}
 Email Body: {body}

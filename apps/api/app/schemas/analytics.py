@@ -1,6 +1,7 @@
 """
 Analytics Pydantic v2 schemas.
 """
+
 from __future__ import annotations
 
 from datetime import date
@@ -31,7 +32,7 @@ class SourceStat(BaseModel):
 
 
 class ScoreBucket(BaseModel):
-    bucket_label: str          # e.g. "0-20", "21-40", ...
+    bucket_label: str  # e.g. "0-20", "21-40", ...
     min_score: float
     max_score: float
     job_count: int
@@ -44,8 +45,8 @@ class DashboardStats(BaseModel):
     active_interviews: int
     offers_received: int
     avg_match_score: Optional[float] = None
-    response_rate: Optional[float] = None   # applied -> recruiter_contacted / applied
-    offer_rate: Optional[float] = None      # offers / applied
+    response_rate: Optional[float] = None  # applied -> recruiter_contacted / applied
+    offer_rate: Optional[float] = None  # offers / applied
     recent_activity: List[Dict] = Field(default_factory=list)
 
 

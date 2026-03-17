@@ -1,18 +1,19 @@
 """
 Job-related Pydantic v2 schemas.
 """
+
 from __future__ import annotations
 
 import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
-from pydantic import BaseModel, Field, model_config
+from pydantic import BaseModel, Field
 
 from app.models.job import EmploymentType, JobSeniority, JobStatus
 
-
 # ── Job source ────────────────────────────────────────────────────────────────
+
 
 class JobSourceResponse(BaseModel):
     model_config = {"from_attributes": True}
@@ -26,6 +27,7 @@ class JobSourceResponse(BaseModel):
 
 
 # ── Job match ─────────────────────────────────────────────────────────────────
+
 
 class JobMatchResponse(BaseModel):
     model_config = {"from_attributes": True}
@@ -48,6 +50,7 @@ class JobMatchResponse(BaseModel):
 
 
 # ── Job list / detail ─────────────────────────────────────────────────────────
+
 
 class JobListItem(BaseModel):
     model_config = {"from_attributes": True}
@@ -73,6 +76,7 @@ class JobListItem(BaseModel):
 
 class JobResponse(JobListItem):
     """Full job detail including description and match info."""
+
     company_website: Optional[str] = None
     raw_description: Optional[str] = None
     cleaned_description: Optional[str] = None
@@ -87,8 +91,10 @@ class JobResponse(JobListItem):
 
 # ── Job filters & search ──────────────────────────────────────────────────────
 
+
 class JobFilter(BaseModel):
     """Query parameters for job listing endpoint."""
+
     source: Optional[str] = None
     status: Optional[JobStatus] = None
     is_remote: Optional[bool] = None
@@ -98,7 +104,9 @@ class JobFilter(BaseModel):
     min_score: Optional[float] = Field(default=None, ge=0.0, le=1.0)
     keyword: Optional[str] = None
     location: Optional[str] = None
-    sort_by: str = Field(default="ingested_at", description="match_score | posting_date | ingested_at")
+    sort_by: str = Field(
+        default="ingested_at", description="match_score | posting_date | ingested_at"
+    )
     sort_dir: str = Field(default="desc", description="asc | desc")
 
 
@@ -110,6 +118,7 @@ class JobSearchRequest(BaseModel):
 
 class JobRankingResponse(BaseModel):
     """Ranked list of jobs with match scores."""
+
     jobs: List[JobListItem]
     total: int
     query: Optional[str] = None

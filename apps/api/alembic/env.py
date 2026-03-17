@@ -4,6 +4,7 @@ Alembic environment configuration — async-compatible with FastAPI/asyncpg.
 Reads DATABASE_URL from application settings so migrations always use the
 same database as the running application.
 """
+
 import asyncio
 from logging.config import fileConfig
 
@@ -18,7 +19,17 @@ from app.core.config import settings
 from app.core.database import Base
 
 # Import every model module so SQLAlchemy can see all tables.
-from app.models import user, profile, resume, job, application, document, email, calendar, agent  # noqa: F401
+from app.models import (  # noqa: F401
+    agent,
+    application,
+    calendar,
+    document,
+    email,
+    job,
+    profile,
+    resume,
+    user,
+)
 
 # ---------------------------------------------------------------------------
 # Alembic Config object — gives access to the alembic.ini file values.
@@ -40,6 +51,7 @@ target_metadata = Base.metadata
 # ---------------------------------------------------------------------------
 # Offline migration helpers
 # ---------------------------------------------------------------------------
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
@@ -67,6 +79,7 @@ def run_migrations_offline() -> None:
 # ---------------------------------------------------------------------------
 # Online / async migration helpers
 # ---------------------------------------------------------------------------
+
 
 def do_run_migrations(connection) -> None:
     """Execute migrations using an existing synchronous-compatible connection."""

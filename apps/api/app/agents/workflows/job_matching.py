@@ -4,6 +4,7 @@ Job matching LangGraph workflow.
 State graph:
   analyze_requirements → compute_embedding_similarity → evaluate_skills → score_and_explain
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, TypedDict
@@ -19,6 +20,7 @@ logger = structlog.get_logger(__name__)
 
 
 # ── State ─────────────────────────────────────────────────────────────────────
+
 
 class JobMatchState(TypedDict, total=False):
     # Inputs
@@ -45,6 +47,7 @@ class JobMatchState(TypedDict, total=False):
 
 
 # ── Nodes ─────────────────────────────────────────────────────────────────────
+
 
 def analyze_requirements(state: JobMatchState) -> JobMatchState:
     """Parse and normalize job requirements."""
@@ -139,6 +142,7 @@ def score_and_explain(state: JobMatchState) -> JobMatchState:
 
 
 # ── Graph ─────────────────────────────────────────────────────────────────────
+
 
 def build_job_matching_graph() -> StateGraph:
     graph = StateGraph(JobMatchState)

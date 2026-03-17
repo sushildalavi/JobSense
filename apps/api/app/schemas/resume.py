@@ -1,16 +1,17 @@
 """
 Resume Pydantic v2 schemas.
 """
+
 from __future__ import annotations
 
 import uuid
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, model_config
-
+from pydantic import BaseModel, Field
 
 # ── Nested parsed resume data structures ─────────────────────────────────────
+
 
 class WorkExperienceItem(BaseModel):
     company: str
@@ -89,6 +90,7 @@ class ParsedResumeData(BaseModel):
 
 # ── Master resume schemas ──────────────────────────────────────────────────────
 
+
 class MasterResumeCreate(BaseModel):
     name: str = Field(min_length=1, max_length=255)
 
@@ -114,6 +116,7 @@ class MasterResumeResponse(BaseModel):
 
 
 # ── Resume version schemas ──────────────────────────────────────────────────────
+
 
 class ResumeVersionCreate(BaseModel):
     name: str = Field(min_length=1, max_length=255)
@@ -144,6 +147,7 @@ class ResumeVersionResponse(BaseModel):
 
 
 # ── Tailoring schemas ──────────────────────────────────────────────────────────
+
 
 class TailoringRequest(BaseModel):
     resume_id: uuid.UUID

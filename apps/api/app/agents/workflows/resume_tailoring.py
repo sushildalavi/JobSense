@@ -4,6 +4,7 @@ Resume tailoring LangGraph workflow.
 State graph:
   analyze_job → plan_tailoring → tailor_sections → validate_truthfulness → finalize
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, TypedDict
@@ -19,6 +20,7 @@ logger = structlog.get_logger(__name__)
 
 
 # ── State ─────────────────────────────────────────────────────────────────────
+
 
 class ResumeTailoringState(TypedDict, total=False):
     # Inputs
@@ -38,6 +40,7 @@ class ResumeTailoringState(TypedDict, total=False):
 
 
 # ── Nodes ─────────────────────────────────────────────────────────────────────
+
 
 def analyze_job(state: ResumeTailoringState) -> ResumeTailoringState:
     """Extract key requirements that should be reflected in the resume."""
@@ -124,7 +127,7 @@ def validate_truthfulness(state: ResumeTailoringState) -> ResumeTailoringState:
             ratio=ratio,
         )
         # Truncate to prevent obvious hallucination
-        state["tailored_draft"] = tailored[:len(original) * 2]
+        state["tailored_draft"] = tailored[: len(original) * 2]
 
     state["validation_passed"] = True
     return state
@@ -145,6 +148,7 @@ def finalize(state: ResumeTailoringState) -> ResumeTailoringState:
 
 
 # ── Graph ─────────────────────────────────────────────────────────────────────
+
 
 def build_resume_tailoring_graph() -> StateGraph:
     graph = StateGraph(ResumeTailoringState)

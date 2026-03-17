@@ -1,13 +1,14 @@
 """
 User Profile Pydantic v2 schemas.
 """
+
 from __future__ import annotations
 
 import uuid
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, Field, HttpUrl, field_validator, model_config
+from pydantic import BaseModel, Field, field_validator
 
 from app.models.profile import RemotePreference, SeniorityLevel
 
@@ -46,6 +47,7 @@ class ProfileCreate(BaseModel):
 
 class ProfileUpdate(BaseModel):
     """All fields optional for PATCH operations."""
+
     target_roles: Optional[List[str]] = None
     preferred_locations: Optional[List[str]] = None
     remote_preference: Optional[RemotePreference] = None

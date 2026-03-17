@@ -1,6 +1,7 @@
 """
 BaseAgent — shared utilities for all LangGraph workflows.
 """
+
 from __future__ import annotations
 
 import json

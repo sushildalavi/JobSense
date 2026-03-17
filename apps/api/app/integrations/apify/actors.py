@@ -1,6 +1,7 @@
 """
 Known Apify actor IDs and their default input schemas.
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict

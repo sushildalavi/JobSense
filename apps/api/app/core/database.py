@@ -1,6 +1,7 @@
 """
 SQLAlchemy async engine and session configuration.
 """
+
 from __future__ import annotations
 
 from typing import AsyncGenerator
@@ -40,6 +41,7 @@ AsyncSessionLocal = async_sessionmaker(
 # ── Declarative base ──────────────────────────────────────────────────────────
 class Base(DeclarativeBase):
     """Shared declarative base for all ORM models."""
+
     pass
 
 

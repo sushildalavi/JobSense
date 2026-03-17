@@ -1,6 +1,7 @@
 """
 AI-related Celery tasks: resume tailoring, parsing, agent workflows.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -30,9 +31,7 @@ def _run_async(coro):
     max_retries=2,
     default_retry_delay=60,
 )
-def tailor_resume(
-    self, application_id: str, resume_id: str
-) -> Dict[str, Any]:
+def tailor_resume(self, application_id: str, resume_id: str) -> Dict[str, Any]:
     """Tailor a master resume for the given application's job."""
     logger.info("tailor_resume started", application_id=application_id, resume_id=resume_id)
     try:
@@ -43,12 +42,13 @@ def tailor_resume(
 
 
 async def _tailor_resume_async(application_id: str, resume_id: str) -> Dict[str, Any]:
+    from sqlalchemy import select
+
+    from app.agents.workflows.resume_tailoring import run_resume_tailoring_workflow
     from app.core.database import AsyncSessionLocal
     from app.models.application import Application
     from app.models.resume import MasterResume
-    from app.agents.workflows.resume_tailoring import run_resume_tailoring_workflow
     from app.services.resume_service import ResumeService
-    from sqlalchemy import select
 
     async with AsyncSessionLocal() as db:
         app_result = await db.execute(
@@ -66,9 +66,8 @@ async def _tailor_resume_async(application_id: str, resume_id: str) -> Dict[str,
             return {"skipped": True, "reason": "resume not found"}
 
         from app.models.job import Job
-        job_result = await db.execute(
-            select(Job).where(Job.id == application.job_id)
-        )
+
+        job_result = await db.execute(select(Job).where(Job.id == application.job_id))
         job = job_result.scalar_one_or_none()
         if job is None:
             return {"skipped": True, "reason": "job not found"}
@@ -111,10 +110,11 @@ def parse_resume(self, resume_id: str) -> Dict[str, Any]:
 
 
 async def _parse_resume_async(resume_id: str) -> Dict[str, Any]:
+    from sqlalchemy import select
+
     from app.core.database import AsyncSessionLocal
     from app.models.resume import MasterResume
     from app.services.resume_service import ResumeService
-    from sqlalchemy import select
 
     async with AsyncSessionLocal() as db:
         result = await db.execute(
@@ -151,9 +151,7 @@ def run_agent_workflow(
         run_id=run_id,
     )
     try:
-        return _run_async(
-            _run_agent_workflow_async(workflow_name, input_data, user_id, run_id)
-        )
+        return _run_async(_run_agent_workflow_async(workflow_name, input_data, user_id, run_id))
     except Exception as exc:
         logger.error("run_agent_workflow failed", workflow=workflow_name, error=str(exc))
         if run_id:
@@ -167,9 +165,10 @@ async def _run_agent_workflow_async(
     user_id: str,
     run_id: Optional[str],
 ) -> Dict[str, Any]:
-    from app.core.database import AsyncSessionLocal
-    from app.models.agent import AgentRun, AgentRunStatus, WorkflowName
     from sqlalchemy import select
+
+    from app.core.database import AsyncSessionLocal
+    from app.models.agent import AgentRun, AgentRunStatus
 
     start_time = datetime.now(timezone.utc)
 
@@ -198,9 +197,7 @@ async def _run_agent_workflow_async(
 
     if run_id:
         async with AsyncSessionLocal() as db:
-            result = await db.execute(
-                select(AgentRun).where(AgentRun.id == uuid.UUID(run_id))
-            )
+            result = await db.execute(select(AgentRun).where(AgentRun.id == uuid.UUID(run_id)))
             run = result.scalar_one_or_none()
             if run:
                 run.status = AgentRunStatus.failed if error_message else AgentRunStatus.completed
@@ -217,6 +214,7 @@ async def _run_agent_workflow_async(
 
 async def _run_job_matching(input_data: Dict, user_id: str) -> Dict:
     from app.tasks.matching import compute_job_matches_for_user
+
     compute_job_matches_for_user.delay(user_id)
     return {"triggered": True}
 
@@ -232,25 +230,26 @@ async def _run_resume_tailoring(input_data: Dict, user_id: str) -> Dict:
 
 async def _run_email_classification(input_data: Dict, user_id: str) -> Dict:
     from app.tasks.email_tasks import sync_gmail_threads
+
     sync_gmail_threads.delay(user_id)
     return {"triggered": True}
 
 
 async def _run_job_discovery(input_data: Dict, user_id: str) -> Dict:
     from app.tasks.ingestion import sync_apify_jobs
+
     sync_apify_jobs.delay(None, user_id)
     return {"triggered": True}
 
 
 async def _mark_run_failed(run_id: str, error: str) -> None:
-    from app.core.database import AsyncSessionLocal
-    from app.models.agent import AgentRun, AgentRunStatus
     from sqlalchemy import select
 
+    from app.core.database import AsyncSessionLocal
+    from app.models.agent import AgentRun, AgentRunStatus
+
     async with AsyncSessionLocal() as db:
-        result = await db.execute(
-            select(AgentRun).where(AgentRun.id == uuid.UUID(run_id))
-        )
+        result = await db.execute(select(AgentRun).where(AgentRun.id == uuid.UUID(run_id)))
         run = result.scalar_one_or_none()
         if run:
             run.status = AgentRunStatus.failed

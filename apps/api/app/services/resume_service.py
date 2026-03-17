@@ -1,6 +1,7 @@
 """
 Resume service — CRUD, parsing, PDF export.
 """
+
 from __future__ import annotations
 
 import io
@@ -51,6 +52,7 @@ class ResumeService:
         file_url: Optional[str] = None
         try:
             from app.core.storage_utils import upload_file
+
             file_url = await upload_file(
                 file_bytes=content,
                 key=f"resumes/{user_id}/{uuid.uuid4()}/{file.filename}",
@@ -103,9 +105,7 @@ class ResumeService:
         self.db.add(resume)
         await self.db.commit()
 
-    async def trigger_parse(
-        self, resume_id: uuid.UUID, user_id: uuid.UUID
-    ) -> MasterResume:
+    async def trigger_parse(self, resume_id: uuid.UUID, user_id: uuid.UUID) -> MasterResume:
         """Run AI text parsing and store structured data on the resume."""
         resume = await self.get_resume(resume_id, user_id)
         if resume.raw_text:
@@ -131,9 +131,7 @@ class ResumeService:
         )
         return list(result.scalars().all())
 
-    async def get_version(
-        self, version_id: uuid.UUID, user_id: uuid.UUID
-    ) -> ResumeVersion:
+    async def get_version(self, version_id: uuid.UUID, user_id: uuid.UUID) -> ResumeVersion:
         result = await self.db.execute(
             select(ResumeVersion).where(
                 ResumeVersion.id == version_id,
@@ -176,9 +174,7 @@ class ResumeService:
         await self.db.refresh(version)
         return version
 
-    async def export_version_to_pdf(
-        self, version_id: uuid.UUID, user_id: uuid.UUID
-    ) -> bytes:
+    async def export_version_to_pdf(self, version_id: uuid.UUID, user_id: uuid.UUID) -> bytes:
         """Generate a minimal PDF from the tailored content."""
         version = await self.get_version(version_id, user_id)
         return self._render_pdf(version.tailored_content or "")
@@ -191,11 +187,13 @@ class ResumeService:
         try:
             if lower.endswith(".pdf"):
                 from pypdf import PdfReader
+
                 reader = PdfReader(io.BytesIO(content))
                 pages = [page.extract_text() or "" for page in reader.pages]
                 return "\n".join(pages)
             elif lower.endswith(".docx"):
                 from docx import Document
+
                 doc = Document(io.BytesIO(content))
                 return "\n".join(para.text for para in doc.paragraphs)
             else:
@@ -234,10 +232,11 @@ class ResumeService:
     def _render_pdf(self, content: str) -> bytes:
         """Render resume text content to PDF bytes using reportlab."""
         try:
-            from reportlab.lib.pagesizes import letter
-            from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-            from reportlab.lib.styles import getSampleStyleSheet
             import io as _io
+
+            from reportlab.lib.pagesizes import letter
+            from reportlab.lib.styles import getSampleStyleSheet
+            from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
             buf = _io.BytesIO()
             doc = SimpleDocTemplate(buf, pagesize=letter)

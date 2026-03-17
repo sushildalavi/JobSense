@@ -1,6 +1,7 @@
 """
 Job service — listing, search, shortlisting, match retrieval.
 """
+
 from __future__ import annotations
 
 import uuid
@@ -8,9 +9,8 @@ from typing import List, Optional, Tuple
 
 import structlog
 from fastapi import HTTPException, status
-from sqlalchemy import and_, func, or_, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from app.models.application import Application, ApplicationStatus
 from app.models.job import Job, JobMatch, JobSource, JobStatus
@@ -33,10 +33,7 @@ class JobService:
         limit: int = 20,
     ) -> Tuple[List[Job], int]:
         """Return filtered, sorted, paginated jobs with user match scores."""
-        query = (
-            select(Job)
-            .where(Job.status == JobStatus.active)
-        )
+        query = select(Job).where(Job.status == JobStatus.active)
 
         # Apply filters
         if filters.is_remote is not None:
@@ -61,9 +58,7 @@ class JobService:
             query = query.where(Job.location.ilike(loc))
 
         # Count before pagination
-        count_result = await self.db.execute(
-            select(func.count()).select_from(query.subquery())
-        )
+        count_result = await self.db.execute(select(func.count()).select_from(query.subquery()))
         total = count_result.scalar() or 0
 
         # Sorting
@@ -102,14 +97,14 @@ class JobService:
                     reverse=(filters.sort_dir == "desc"),
                 )
             if filters.min_score is not None:
-                jobs = [j for j in jobs if (getattr(j, "match_score", None) or 0) >= filters.min_score]
+                jobs = [
+                    j for j in jobs if (getattr(j, "match_score", None) or 0) >= filters.min_score
+                ]
 
         return jobs, total
 
     async def list_sources(self) -> List[JobSource]:
-        result = await self.db.execute(
-            select(JobSource).order_by(JobSource.name.asc())
-        )
+        result = await self.db.execute(select(JobSource).order_by(JobSource.name.asc()))
         return list(result.scalars().all())
 
     # ── Job detail ────────────────────────────────────────────────────────────
@@ -136,9 +131,7 @@ class JobService:
 
     # ── Shortlisting ──────────────────────────────────────────────────────────
 
-    async def shortlist_job(
-        self, user_id: uuid.UUID, job_id: uuid.UUID
-    ) -> Application:
+    async def shortlist_job(self, user_id: uuid.UUID, job_id: uuid.UUID) -> Application:
         """Create or return an Application in 'shortlisted' status."""
         # Ensure job exists
         await self.get_job(job_id)

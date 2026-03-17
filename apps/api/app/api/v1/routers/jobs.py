@@ -1,6 +1,7 @@
 """
 Job endpoints.
 """
+
 from __future__ import annotations
 
 import uuid
@@ -10,7 +11,12 @@ import structlog
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.dependencies import get_current_active_user, get_db, get_pagination, PaginationParams
+from app.api.v1.dependencies import (
+    PaginationParams,
+    get_current_active_user,
+    get_db,
+    get_pagination,
+)
 from app.models.job import EmploymentType, JobSeniority, JobStatus
 from app.models.user import User
 from app.schemas.job import (
@@ -19,7 +25,6 @@ from app.schemas.job import (
     JobMatchResponse,
     JobRankingResponse,
     JobResponse,
-    JobSearchRequest,
     JobSourceResponse,
 )
 from app.services.job_service import JobService
@@ -150,6 +155,7 @@ async def sync_jobs(
 ) -> dict:
     """Trigger Apify job ingestion for one or all sources."""
     from app.tasks.ingestion import sync_apify_jobs
+
     sync_apify_jobs.delay(str(source_id) if source_id else None, str(current_user.id))
     return {"message": "Job sync triggered", "source_id": str(source_id) if source_id else "all"}
 
@@ -162,10 +168,12 @@ async def compute_match(
 ) -> JobMatchResponse:
     """Compute or recompute match score for a job."""
     from app.tasks.matching import compute_single_match
+
     compute_single_match.delay(str(job_id), str(current_user.id))
     service = JobService(db)
     _, match = await service.get_job_with_match(job_id, current_user.id)
     if match is None:
         from fastapi import HTTPException
+
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Match not yet computed")
     return JobMatchResponse.model_validate(match)

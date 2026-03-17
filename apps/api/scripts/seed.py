@@ -9,6 +9,7 @@ Usage:
 The script is idempotent: it checks for the demo user before inserting,
 so running it twice will not create duplicate data.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -25,10 +26,13 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.core.config import settings
-from app.models.agent import AgentRun, AgentRunStatus, AutomationSession, SessionStatus, SessionType, WorkflowName
+from app.models.agent import (
+    AgentRun,
+    AgentRunStatus,
+    WorkflowName,
+)
 from app.models.application import Application, ApplicationEvent, ApplicationStatus, TriggeredBy
 from app.models.calendar import CalendarEvent, CalendarEventStatus
-from app.models.document import Document, DocumentType
 from app.models.email import EmailClassification, EmailThread, ParsedEmail
 from app.models.job import EmploymentType, Job, JobMatch, JobSeniority, JobSource, JobStatus
 from app.models.profile import Profile, RemotePreference, SeniorityLevel
@@ -64,12 +68,32 @@ DEMO_EMAIL = "demo@applyflow.dev"
 DEMO_PASSWORD = "DemoPass123"
 
 SKILLS = [
-    "Python", "PyTorch", "TensorFlow", "JAX", "Scikit-learn",
-    "SQL", "PostgreSQL", "Redis", "Docker", "Kubernetes",
-    "FastAPI", "LangChain", "LangGraph", "OpenAI API", "Anthropic API",
-    "AWS SageMaker", "MLflow", "Weights & Biases", "Ray", "Spark",
-    "Data pipelines", "Feature engineering", "A/B testing",
-    "Distributed training", "RLHF", "RAG",
+    "Python",
+    "PyTorch",
+    "TensorFlow",
+    "JAX",
+    "Scikit-learn",
+    "SQL",
+    "PostgreSQL",
+    "Redis",
+    "Docker",
+    "Kubernetes",
+    "FastAPI",
+    "LangChain",
+    "LangGraph",
+    "OpenAI API",
+    "Anthropic API",
+    "AWS SageMaker",
+    "MLflow",
+    "Weights & Biases",
+    "Ray",
+    "Spark",
+    "Data pipelines",
+    "Feature engineering",
+    "A/B testing",
+    "Distributed training",
+    "RLHF",
+    "RAG",
 ]
 
 JOB_LISTINGS = [
@@ -126,7 +150,13 @@ JOB_LISTINGS = [
             "Design features, run large-scale A/B tests, and deploy real-time models. "
             "PhD or 6+ years industry ML experience."
         ),
-        "requirements": ["Python", "PyTorch", "A/B testing", "large-scale systems", "recommendation systems"],
+        "requirements": [
+            "Python",
+            "PyTorch",
+            "A/B testing",
+            "large-scale systems",
+            "recommendation systems",
+        ],
         "responsibilities": ["Feature engineering", "Model training", "Production deployment"],
     },
     {
@@ -304,7 +334,13 @@ JOB_LISTINGS = [
             "design experiments, collaborate with engineering to ship at scale. "
             "Python + Spark + strong statistics."
         ),
-        "requirements": ["Python", "Spark", "statistics", "causal inference", "recommendation systems"],
+        "requirements": [
+            "Python",
+            "Spark",
+            "statistics",
+            "causal inference",
+            "recommendation systems",
+        ],
         "responsibilities": ["Recommendation models", "Experimentation", "Causal analysis"],
     },
     {
@@ -520,7 +556,14 @@ JOB_LISTINGS = [
             "Implement training improvements, run large-scale experiments, "
             "contribute to open-source releases. Python + JAX/PyTorch."
         ),
-        "requirements": ["Python", "JAX", "PyTorch", "diffusion models", "multimodal", "open source"],
+        "requirements": [
+            "Python",
+            "JAX",
+            "PyTorch",
+            "diffusion models",
+            "multimodal",
+            "open source",
+        ],
         "responsibilities": ["Model training", "Research experiments", "OSS releases"],
     },
 ]
@@ -529,6 +572,7 @@ JOB_LISTINGS = [
 # ---------------------------------------------------------------------------
 # Seed logic
 # ---------------------------------------------------------------------------
+
 
 async def seed(session: AsyncSession) -> None:
     print("🌱  Starting seed...")
@@ -558,8 +602,11 @@ async def seed(session: AsyncSession) -> None:
     profile = Profile(
         user_id=user.id,
         target_roles=[
-            "ML Engineer", "Senior ML Engineer", "AI Engineer",
-            "Research Engineer", "Staff ML Engineer",
+            "ML Engineer",
+            "Senior ML Engineer",
+            "AI Engineer",
+            "Research Engineer",
+            "Staff ML Engineer",
         ],
         preferred_locations=["San Francisco, CA", "Remote", "New York, NY"],
         remote_preference=RemotePreference.remote,
@@ -664,9 +711,22 @@ async def seed(session: AsyncSession) -> None:
     jobs = []
     source_cycle = [sources[0], sources[1], sources[2], sources[3]]
     for i, listing in enumerate(JOB_LISTINGS):
+        source_job_id = (
+            f"{listing['company_name'].lower().replace(' ', '-')}-{uuid.uuid4().hex[:8]}"
+        )
+        salary_text = None
+        if listing.get("salary_min"):
+            salary_text = (
+                f"${listing['salary_min']:,}–${listing['salary_max']:,} "
+                f"{listing.get('currency', 'USD')}"
+            )
+        apply_url = (
+            f"https://jobs.{listing['company_name'].lower().replace(' ', '')}.com/apply/"
+            f"{uuid.uuid4().hex[:8]}"
+        )
         job = Job(
             source_id=source_cycle[i % len(source_cycle)].id,
-            source_job_id=f"{listing['company_name'].lower().replace(' ', '-')}-{uuid.uuid4().hex[:8]}",
+            source_job_id=source_job_id,
             company_name=listing["company_name"],
             title=listing["title"],
             location=listing.get("location"),
@@ -677,17 +737,14 @@ async def seed(session: AsyncSession) -> None:
             seniority=listing.get("seniority", JobSeniority.mid),
             salary_min=listing.get("salary_min"),
             salary_max=listing.get("salary_max"),
-            salary_text=(
-                f"${listing['salary_min']:,}–${listing['salary_max']:,} {listing.get('currency', 'USD')}"
-                if listing.get("salary_min") else None
-            ),
+            salary_text=salary_text,
             currency=listing.get("currency", "USD"),
             raw_description=listing.get("raw_description"),
             cleaned_description=listing.get("raw_description"),
             requirements=listing.get("requirements", []),
             responsibilities=listing.get("responsibilities", []),
             preferred_qualifications=listing.get("preferred_qualifications", []),
-            apply_url=f"https://jobs.{listing['company_name'].lower().replace(' ', '')}.com/apply/{uuid.uuid4().hex[:8]}",
+            apply_url=apply_url,
             posting_date=days_ago(random.randint(1, 30)),
             status=JobStatus.active,
         )
@@ -775,12 +832,18 @@ async def seed(session: AsyncSession) -> None:
             user_id=user.id,
             job_id=job.id,
             status=status,
-            applied_at=applied_at if status in (
-                ApplicationStatus.applied, ApplicationStatus.offer,
-                ApplicationStatus.interview_scheduled, ApplicationStatus.rejected,
-                ApplicationStatus.recruiter_contacted, ApplicationStatus.oa_received,
-            ) else None,
-            notes=f"Applied via company website. Job looks like an excellent fit.",
+            applied_at=applied_at
+            if status
+            in (
+                ApplicationStatus.applied,
+                ApplicationStatus.offer,
+                ApplicationStatus.interview_scheduled,
+                ApplicationStatus.rejected,
+                ApplicationStatus.recruiter_contacted,
+                ApplicationStatus.oa_received,
+            )
+            else None,
+            notes="Applied via company website. Job looks like an excellent fit.",
             source_of_discovery="Apify LinkedIn Scraper",
         )
         applications.append(app)
@@ -791,29 +854,43 @@ async def seed(session: AsyncSession) -> None:
     # Application events (audit trail)
     status_progression = {
         ApplicationStatus.interview_scheduled: [
-            ApplicationStatus.discovered, ApplicationStatus.shortlisted,
-            ApplicationStatus.applied, ApplicationStatus.recruiter_contacted,
+            ApplicationStatus.discovered,
+            ApplicationStatus.shortlisted,
+            ApplicationStatus.applied,
+            ApplicationStatus.recruiter_contacted,
             ApplicationStatus.interview_scheduled,
         ],
         ApplicationStatus.applied: [
-            ApplicationStatus.discovered, ApplicationStatus.shortlisted, ApplicationStatus.applied,
+            ApplicationStatus.discovered,
+            ApplicationStatus.shortlisted,
+            ApplicationStatus.applied,
         ],
         ApplicationStatus.recruiter_contacted: [
-            ApplicationStatus.discovered, ApplicationStatus.applied, ApplicationStatus.recruiter_contacted,
+            ApplicationStatus.discovered,
+            ApplicationStatus.applied,
+            ApplicationStatus.recruiter_contacted,
         ],
         ApplicationStatus.offer: [
-            ApplicationStatus.discovered, ApplicationStatus.shortlisted, ApplicationStatus.applied,
-            ApplicationStatus.recruiter_contacted, ApplicationStatus.interview_scheduled,
+            ApplicationStatus.discovered,
+            ApplicationStatus.shortlisted,
+            ApplicationStatus.applied,
+            ApplicationStatus.recruiter_contacted,
+            ApplicationStatus.interview_scheduled,
             ApplicationStatus.offer,
         ],
         ApplicationStatus.tailored: [
-            ApplicationStatus.discovered, ApplicationStatus.shortlisted, ApplicationStatus.tailored,
+            ApplicationStatus.discovered,
+            ApplicationStatus.shortlisted,
+            ApplicationStatus.tailored,
         ],
         ApplicationStatus.shortlisted: [
-            ApplicationStatus.discovered, ApplicationStatus.shortlisted,
+            ApplicationStatus.discovered,
+            ApplicationStatus.shortlisted,
         ],
         ApplicationStatus.rejected: [
-            ApplicationStatus.discovered, ApplicationStatus.applied, ApplicationStatus.rejected,
+            ApplicationStatus.discovered,
+            ApplicationStatus.applied,
+            ApplicationStatus.rejected,
         ],
     }
 
@@ -825,8 +902,11 @@ async def seed(session: AsyncSession) -> None:
                 application_id=app.id,
                 from_status=prev,
                 to_status=step,
-                triggered_by=TriggeredBy.user if i == 0 else (
-                    TriggeredBy.email_parser if step == ApplicationStatus.recruiter_contacted
+                triggered_by=TriggeredBy.user
+                if i == 0
+                else (
+                    TriggeredBy.email_parser
+                    if step == ApplicationStatus.recruiter_contacted
                     else TriggeredBy.user
                 ),
                 notes=f"Transitioned to {step.value}",
@@ -847,14 +927,16 @@ async def seed(session: AsyncSession) -> None:
             name=f"Resume for {job.company_name} — {job.title}",
             tailored_content=(
                 f"ALEX CHEN — Tailored for {job.company_name}\n\n"
-                "Highlights aligned to role: " + ", ".join(
-                    job.requirements[:3] if job.requirements else ["ML", "Python"]
-                )
+                "Highlights aligned to role: "
+                + ", ".join(job.requirements[:3] if job.requirements else ["ML", "Python"])
             ),
             tailored_data={"highlights": job.requirements[:3] if job.requirements else []},
             tailoring_strategy={
                 "approach": "keyword_injection + reorder_bullets",
-                "changes": ["Added company-specific language", "Reordered bullet points by relevance"],
+                "changes": [
+                    "Added company-specific language",
+                    "Reordered bullet points by relevance",
+                ],
             },
             ai_model_used="gpt-4o",
             prompt_version="v1.2",
@@ -884,32 +966,34 @@ async def seed(session: AsyncSession) -> None:
     session.add(thread1)
     await session.flush()
 
-    session.add(ParsedEmail(
-        thread_id=thread1.id,
-        user_id=user.id,
-        message_id=f"msg-{uuid.uuid4().hex[:16]}",
-        subject=thread1.subject,
-        sender_email="recruiter@openmindai.com",
-        sender_name="Sarah Park",
-        received_at=days_ago(3),
-        raw_body=(
-            "Hi Alex, I'm Sarah from OpenMind AI's talent team. We reviewed your profile "
-            "and would love to schedule a technical interview for our Senior ML Engineer role. "
-            "Are you available next week? Best, Sarah"
-        ),
-        cleaned_body="Recruiter outreach for Senior ML Engineer role at OpenMind AI.",
-        classification=EmailClassification.interview_scheduling,
-        confidence_score=0.97,
-        extracted_company="OpenMind AI",
-        extracted_job_title="Senior ML Engineer",
-        extracted_interviewer_name="Sarah Park",
-        extracted_interview_datetime=days_from_now(5),
-        extracted_timezone="America/Los_Angeles",
-        extracted_meeting_link="https://zoom.us/j/123456789",
-        extracted_next_action="Confirm interview slot",
-        model_used="gpt-4o",
-        prompt_version="v1.1",
-    ))
+    session.add(
+        ParsedEmail(
+            thread_id=thread1.id,
+            user_id=user.id,
+            message_id=f"msg-{uuid.uuid4().hex[:16]}",
+            subject=thread1.subject,
+            sender_email="recruiter@openmindai.com",
+            sender_name="Sarah Park",
+            received_at=days_ago(3),
+            raw_body=(
+                "Hi Alex, I'm Sarah from OpenMind AI's talent team. We reviewed your profile "
+                "and would love to schedule a technical interview for our Senior ML Engineer role. "
+                "Are you available next week? Best, Sarah"
+            ),
+            cleaned_body="Recruiter outreach for Senior ML Engineer role at OpenMind AI.",
+            classification=EmailClassification.interview_scheduling,
+            confidence_score=0.97,
+            extracted_company="OpenMind AI",
+            extracted_job_title="Senior ML Engineer",
+            extracted_interviewer_name="Sarah Park",
+            extracted_interview_datetime=days_from_now(5),
+            extracted_timezone="America/Los_Angeles",
+            extracted_meeting_link="https://zoom.us/j/123456789",
+            extracted_next_action="Confirm interview slot",
+            model_used="gpt-4o",
+            prompt_version="v1.1",
+        )
+    )
 
     # Thread 2: OA received
     app_oa = applications[1]
@@ -929,39 +1013,43 @@ async def seed(session: AsyncSession) -> None:
     session.add(thread2)
     await session.flush()
 
-    session.add(ParsedEmail(
-        thread_id=thread2.id,
-        user_id=user.id,
-        message_id=f"msg-{uuid.uuid4().hex[:16]}",
-        subject=thread2.subject,
-        sender_email="recruiting@anthropic.com",
-        sender_name="Anthropic Recruiting",
-        received_at=days_ago(7),
-        raw_body=(
-            "Dear Alex, thank you for applying to the AI Engineer position at Anthropic. "
-            "Please complete the following online assessment within 5 days. "
-            "Link: https://assessments.anthropic.com/alex123"
-        ),
-        cleaned_body="OA invitation from Anthropic for AI Engineer role.",
-        classification=EmailClassification.oa_assessment,
-        confidence_score=0.94,
-        extracted_company="Anthropic",
-        extracted_job_title="AI Engineer — Agents & Tooling",
-        extracted_next_action="Complete online assessment within 5 days",
-        extracted_data={"assessment_link": "https://assessments.anthropic.com/alex123", "deadline_days": 5},
-        model_used="gpt-4o",
-        prompt_version="v1.1",
-    ))
+    session.add(
+        ParsedEmail(
+            thread_id=thread2.id,
+            user_id=user.id,
+            message_id=f"msg-{uuid.uuid4().hex[:16]}",
+            subject=thread2.subject,
+            sender_email="recruiting@anthropic.com",
+            sender_name="Anthropic Recruiting",
+            received_at=days_ago(7),
+            raw_body=(
+                "Dear Alex, thank you for applying to the AI Engineer position at Anthropic. "
+                "Please complete the following online assessment within 5 days. "
+                "Link: https://assessments.anthropic.com/alex123"
+            ),
+            cleaned_body="OA invitation from Anthropic for AI Engineer role.",
+            classification=EmailClassification.oa_assessment,
+            confidence_score=0.94,
+            extracted_company="Anthropic",
+            extracted_job_title="AI Engineer — Agents & Tooling",
+            extracted_next_action="Complete online assessment within 5 days",
+            extracted_data={
+                "assessment_link": "https://assessments.anthropic.com/alex123",
+                "deadline_days": 5,
+            },
+            model_used="gpt-4o",
+            prompt_version="v1.1",
+        )
+    )
 
     # Thread 3: Rejection
     app_rejected = applications[6]
-    job_rejected = jobs[14]
 
     thread3 = EmailThread(
         user_id=user.id,
         application_id=app_rejected.id,
         thread_id=f"gmail-thread-{uuid.uuid4().hex[:16]}",
-        subject=f"Your application to Scale AI",
+        subject="Your application to Scale AI",
         participants=["noreply@scaleai.com", DEMO_EMAIL],
         last_message_at=days_ago(14),
         message_count=1,
@@ -971,27 +1059,29 @@ async def seed(session: AsyncSession) -> None:
     session.add(thread3)
     await session.flush()
 
-    session.add(ParsedEmail(
-        thread_id=thread3.id,
-        user_id=user.id,
-        message_id=f"msg-{uuid.uuid4().hex[:16]}",
-        subject="Your application to Scale AI",
-        sender_email="noreply@scaleai.com",
-        sender_name="Scale AI Recruiting",
-        received_at=days_ago(14),
-        raw_body=(
-            "Hi Alex, thank you for your interest in the ML Research Engineer position "
-            "at Scale AI. After careful consideration, we've decided to move forward with "
-            "other candidates at this time. We encourage you to apply again in the future."
-        ),
-        cleaned_body="Rejection email from Scale AI.",
-        classification=EmailClassification.rejection,
-        confidence_score=0.99,
-        extracted_company="Scale AI",
-        extracted_job_title="ML Research Engineer — Vision",
-        model_used="gpt-4o",
-        prompt_version="v1.1",
-    ))
+    session.add(
+        ParsedEmail(
+            thread_id=thread3.id,
+            user_id=user.id,
+            message_id=f"msg-{uuid.uuid4().hex[:16]}",
+            subject="Your application to Scale AI",
+            sender_email="noreply@scaleai.com",
+            sender_name="Scale AI Recruiting",
+            received_at=days_ago(14),
+            raw_body=(
+                "Hi Alex, thank you for your interest in the ML Research Engineer position "
+                "at Scale AI. After careful consideration, we've decided to move forward with "
+                "other candidates at this time. We encourage you to apply again in the future."
+            ),
+            cleaned_body="Rejection email from Scale AI.",
+            classification=EmailClassification.rejection,
+            confidence_score=0.99,
+            extracted_company="Scale AI",
+            extracted_job_title="ML Research Engineer — Vision",
+            model_used="gpt-4o",
+            prompt_version="v1.1",
+        )
+    )
 
     await session.flush()
 
@@ -1047,10 +1137,28 @@ async def seed(session: AsyncSession) -> None:
     agent_run_data = [
         (WorkflowName.job_discovery, AgentRunStatus.completed, days_ago(1), 4500, "gpt-4o"),
         (WorkflowName.job_matching, AgentRunStatus.completed, days_ago(1), 2100, "gpt-4o"),
-        (WorkflowName.resume_tailoring, AgentRunStatus.completed, days_ago(5), 6800, "claude-3-5-sonnet-20241022"),
-        (WorkflowName.email_classification, AgentRunStatus.completed, days_ago(2), 350, "gpt-4o-mini"),
+        (
+            WorkflowName.resume_tailoring,
+            AgentRunStatus.completed,
+            days_ago(5),
+            6800,
+            "claude-3-5-sonnet-20241022",
+        ),
+        (
+            WorkflowName.email_classification,
+            AgentRunStatus.completed,
+            days_ago(2),
+            350,
+            "gpt-4o-mini",
+        ),
         (WorkflowName.email_extraction, AgentRunStatus.completed, days_ago(2), 500, "gpt-4o"),
-        (WorkflowName.calendar_automation, AgentRunStatus.completed, days_ago(2), 200, "gpt-4o-mini"),
+        (
+            WorkflowName.calendar_automation,
+            AgentRunStatus.completed,
+            days_ago(2),
+            200,
+            "gpt-4o-mini",
+        ),
         (WorkflowName.resume_tailoring, AgentRunStatus.failed, days_ago(3), None, "gpt-4o"),
     ]
 
@@ -1060,14 +1168,18 @@ async def seed(session: AsyncSession) -> None:
             workflow_name=wf,
             status=status,
             input_data={"user_id": str(user.id), "workflow": wf.value},
-            output_data={"success": status == AgentRunStatus.completed} if status != AgentRunStatus.failed else None,
+            output_data={"success": status == AgentRunStatus.completed}
+            if status != AgentRunStatus.failed
+            else None,
             error_message="Rate limit exceeded" if status == AgentRunStatus.failed else None,
             model_used=model,
             prompt_version="v1.2",
             tokens_used=tokens,
             duration_ms=random.randint(500, 8000),
             started_at=created,
-            completed_at=created + timedelta(seconds=random.randint(2, 30)) if status == AgentRunStatus.completed else None,
+            completed_at=created + timedelta(seconds=random.randint(2, 30))
+            if status == AgentRunStatus.completed
+            else None,
         )
         session.add(run)
 
@@ -1077,17 +1189,18 @@ async def seed(session: AsyncSession) -> None:
     await session.commit()
     print("\n✅  Seed complete!")
     print(f"   Demo credentials: {DEMO_EMAIL} / {DEMO_PASSWORD}")
-    print(f"   Users created:    1")
+    print("   Users created:    1")
     print(f"   Jobs created:     {len(jobs)}")
     print(f"   Applications:     {len(applications)}")
-    print(f"   Email threads:    3")
-    print(f"   Calendar events:  2")
+    print("   Email threads:    3")
+    print("   Calendar events:  2")
     print(f"   Agent runs:       {len(agent_run_data)}")
 
 
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
+
 
 async def main() -> None:
     engine = create_async_engine(settings.ASYNC_DATABASE_URL, echo=False)

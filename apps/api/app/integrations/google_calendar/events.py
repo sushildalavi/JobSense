@@ -1,6 +1,7 @@
 """
 Google Calendar event helpers — creation from parsed email data.
 """
+
 from __future__ import annotations
 
 from datetime import datetime, timedelta
@@ -60,8 +61,7 @@ def build_interview_event_body(
         "reminders": {
             "useDefault": False,
             "overrides": [
-                {"method": "popup", "minutes": m}
-                for m in (reminder_minutes or [30, 60])
+                {"method": "popup", "minutes": m} for m in (reminder_minutes or [30, 60])
             ],
         },
     }
@@ -90,9 +90,7 @@ def parse_google_event(raw_event: Dict[str, Any]) -> Dict[str, Any]:
     start_dt = date_parser.parse(start_dt_str) if start_dt_str else None
     end_dt = date_parser.parse(end_dt_str) if end_dt_str else None
 
-    attendees = [
-        a.get("email") for a in raw_event.get("attendees", []) if a.get("email")
-    ]
+    attendees = [a.get("email") for a in raw_event.get("attendees", []) if a.get("email")]
 
     conference = raw_event.get("conferenceData") or {}
     entry_points = conference.get("entryPoints", [])

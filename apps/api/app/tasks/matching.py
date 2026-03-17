@@ -1,11 +1,12 @@
 """
 Job-matching Celery tasks.
 """
+
 from __future__ import annotations
 
 import asyncio
 import uuid
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 import structlog
 
@@ -40,24 +41,21 @@ def compute_job_matches_for_user(self, user_id: str) -> Dict[str, Any]:
 
 
 async def _compute_matches_for_user_async(user_id: str) -> Dict[str, Any]:
-    from app.core.database import AsyncSessionLocal
-    from app.models.job import Job, JobMatch, JobStatus
-    from app.models.profile import Profile
     from sqlalchemy import select
+
+    from app.core.database import AsyncSessionLocal
+    from app.models.job import Job, JobStatus
+    from app.models.profile import Profile
 
     async with AsyncSessionLocal() as db:
         # Get user profile
-        result = await db.execute(
-            select(Profile).where(Profile.user_id == uuid.UUID(user_id))
-        )
+        result = await db.execute(select(Profile).where(Profile.user_id == uuid.UUID(user_id)))
         profile = result.scalar_one_or_none()
         if profile is None:
             return {"skipped": True, "reason": "no profile"}
 
         # Get active jobs without existing match
-        result = await db.execute(
-            select(Job).where(Job.status == JobStatus.active).limit(500)
-        )
+        result = await db.execute(select(Job).where(Job.status == JobStatus.active).limit(500))
         jobs = result.scalars().all()
 
         count = 0
@@ -85,11 +83,12 @@ def compute_single_match(self, job_id: str, user_id: str) -> Dict[str, Any]:
 
 
 async def _compute_single_match_async(job_id: str, user_id: str) -> Dict[str, Any]:
+    from sqlalchemy import select
+
+    from app.agents.workflows.job_matching import run_job_matching_workflow
     from app.core.database import AsyncSessionLocal
     from app.models.job import Job, JobMatch
     from app.models.profile import Profile
-    from app.agents.workflows.job_matching import run_job_matching_workflow
-    from sqlalchemy import select
 
     async with AsyncSessionLocal() as db:
         job_result = await db.execute(select(Job).where(Job.id == uuid.UUID(job_id)))
@@ -144,9 +143,10 @@ def recompute_all_matches() -> Dict[str, Any]:
 
 
 async def _recompute_all_async() -> Dict[str, Any]:
+    from sqlalchemy import select
+
     from app.core.database import AsyncSessionLocal
     from app.models.user import User
-    from sqlalchemy import select
 
     async with AsyncSessionLocal() as db:
         result = await db.execute(

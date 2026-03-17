@@ -1,24 +1,28 @@
 """
 Resume endpoints.
 """
+
 from __future__ import annotations
 
 import uuid
 from typing import List
 
 import structlog
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, File, Form, UploadFile, status
 from fastapi.responses import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.dependencies import get_current_active_user, get_db, get_pagination, PaginationParams
+from app.api.v1.dependencies import (
+    PaginationParams,
+    get_current_active_user,
+    get_db,
+    get_pagination,
+)
 from app.models.user import User
 from app.schemas.resume import (
     MasterResumeResponse,
     MasterResumeUpdate,
     ResumeVersionResponse,
-    TailoringRequest,
-    TailoringResponse,
 )
 from app.services.resume_service import ResumeService
 
@@ -34,7 +38,9 @@ async def list_resumes(
 ) -> List[MasterResumeResponse]:
     """List all master resumes for the current user."""
     service = ResumeService(db)
-    resumes = await service.list_resumes(current_user.id, skip=pagination.skip, limit=pagination.limit)
+    resumes = await service.list_resumes(
+        current_user.id, skip=pagination.skip, limit=pagination.limit
+    )
     return [MasterResumeResponse.model_validate(r) for r in resumes]
 
 

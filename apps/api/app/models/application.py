@@ -1,6 +1,7 @@
 """
 Application and ApplicationEvent ORM models.
 """
+
 from __future__ import annotations
 
 import enum
@@ -8,7 +9,8 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import DateTime, Enum as SAEnum, ForeignKey, String, Text
+from sqlalchemy import DateTime, ForeignKey, String, Text
+from sqlalchemy import Enum as SAEnum
 from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
@@ -17,11 +19,11 @@ from app.core.database import Base
 from app.models.base import SoftDeleteMixin, TimestampMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
-    from app.models.user import User
+    from app.models.calendar import CalendarEvent
+    from app.models.email import EmailThread
     from app.models.job import Job
     from app.models.resume import ResumeVersion
-    from app.models.email import EmailThread
-    from app.models.calendar import CalendarEvent
+    from app.models.user import User
 
 
 class ApplicationStatus(str, enum.Enum):
@@ -75,9 +77,7 @@ class Application(UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin, Base):
         nullable=False,
         index=True,
     )
-    applied_at: Mapped[Optional[datetime]] = mapped_column(
-        DateTime(timezone=True), nullable=True
-    )
+    applied_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     custom_answers: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
     cover_letter: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
@@ -107,9 +107,7 @@ class ApplicationEvent(Base):
 
     __tablename__ = "application_events"
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     application_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("applications.id", ondelete="CASCADE"),
@@ -118,13 +116,11 @@ class ApplicationEvent(Base):
     )
 
     from_status: Mapped[Optional[str]] = mapped_column(
-        SAEnum(ApplicationStatus, name="application_status_enum",
-               create_type=False),
+        SAEnum(ApplicationStatus, name="application_status_enum", create_type=False),
         nullable=True,
     )
     to_status: Mapped[str] = mapped_column(
-        SAEnum(ApplicationStatus, name="application_status_enum",
-               create_type=False),
+        SAEnum(ApplicationStatus, name="application_status_enum", create_type=False),
         nullable=False,
     )
     triggered_by: Mapped[str] = mapped_column(

@@ -1,13 +1,14 @@
 """
 Application Pydantic v2 schemas.
 """
+
 from __future__ import annotations
 
 import uuid
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, model_config
+from pydantic import BaseModel, Field
 
 from app.models.application import ApplicationStatus, TriggeredBy
 
@@ -61,6 +62,7 @@ class ApplicationListItem(BaseModel):
 
 class ApplicationResponse(ApplicationListItem):
     """Full application detail."""
+
     resume_version_id: Optional[uuid.UUID] = None
     custom_answers: Optional[Dict[str, Any]] = None
     cover_letter: Optional[str] = None

@@ -1,6 +1,7 @@
 """
 AI Agent workflow endpoints.
 """
+
 from __future__ import annotations
 
 import uuid
@@ -11,8 +12,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.dependencies import get_current_active_user, get_db, get_pagination, PaginationParams
-from app.models.agent import AgentRun, AgentRunStatus, WorkflowName
+from app.api.v1.dependencies import (
+    PaginationParams,
+    get_current_active_user,
+    get_db,
+    get_pagination,
+)
+from app.models.agent import AgentRun, AgentRunStatus
 from app.models.user import User
 from app.schemas.agent import AgentRunResponse, WorkflowTriggerRequest
 
@@ -41,6 +47,7 @@ async def trigger_workflow(
     # Dispatch Celery task
     if data.async_execution:
         from app.tasks.ai_tasks import run_agent_workflow
+
         run_agent_workflow.delay(
             data.workflow_name.value,
             data.input_data or {},

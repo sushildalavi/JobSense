@@ -1,6 +1,7 @@
 """
 Normalize Apify actor output to the unified Job schema.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -20,11 +21,7 @@ def normalize_apify_job(
     """
     # Extract title
     title = (
-        raw.get("title")
-        or raw.get("jobTitle")
-        or raw.get("position")
-        or raw.get("name")
-        or ""
+        raw.get("title") or raw.get("jobTitle") or raw.get("position") or raw.get("name") or ""
     ).strip()
     if not title:
         return None
@@ -41,9 +38,7 @@ def normalize_apify_job(
         return None
 
     # Source job ID — use provided ID or hash title+company+location
-    source_job_id = (
-        str(raw.get("id") or raw.get("jobId") or raw.get("postingId") or "")
-    )
+    source_job_id = str(raw.get("id") or raw.get("jobId") or raw.get("postingId") or "")
     if not source_job_id:
         fingerprint = f"{title}|{company}|{raw.get('location', '')}"
         source_job_id = hashlib.md5(fingerprint.encode()).hexdigest()
@@ -65,21 +60,17 @@ def normalize_apify_job(
     salary_min, salary_max, currency = _parse_salary(salary_text or "")
 
     # Description
-    raw_description = str(
-        raw.get("description")
-        or raw.get("jobDescription")
-        or raw.get("descriptionHtml")
-        or ""
-    ).strip() or None
+    raw_description = (
+        str(
+            raw.get("description") or raw.get("jobDescription") or raw.get("descriptionHtml") or ""
+        ).strip()
+        or None
+    )
     cleaned_description = _clean_html(raw_description) if raw_description else None
 
     # URL
     apply_url = (
-        raw.get("url")
-        or raw.get("applyUrl")
-        or raw.get("jobUrl")
-        or raw.get("link")
-        or None
+        raw.get("url") or raw.get("applyUrl") or raw.get("jobUrl") or raw.get("link") or None
     )
 
     # Posting date
@@ -100,9 +91,7 @@ def normalize_apify_job(
     )
 
     # Seniority
-    seniority = _normalize_seniority(
-        raw.get("seniority") or raw.get("seniorityLevel") or title
-    )
+    seniority = _normalize_seniority(raw.get("seniority") or raw.get("seniorityLevel") or title)
 
     return {
         "source_job_id": source_job_id,
@@ -154,7 +143,7 @@ def _parse_salary(text: str) -> tuple[Optional[int], Optional[int], Optional[str
         try:
             v = float(n.replace(",", ""))
             # Handle "k" suffix
-            if "k" in text[text.find(n) + len(n):text.find(n) + len(n) + 2].lower():
+            if "k" in text[text.find(n) + len(n) : text.find(n) + len(n) + 2].lower():
                 v *= 1000
             elif v < 1000:  # likely hourly — convert to annual
                 v *= 2080
@@ -176,6 +165,7 @@ def _parse_date(raw: Any) -> Optional[datetime]:
         return raw
     try:
         from dateutil import parser as date_parser
+
         return date_parser.parse(str(raw))
     except Exception:
         return None

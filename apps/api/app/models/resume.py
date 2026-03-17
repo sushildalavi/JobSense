@@ -1,6 +1,7 @@
 """
 Resume ORM models: MasterResume and ResumeVersion.
 """
+
 from __future__ import annotations
 
 import uuid
@@ -17,8 +18,6 @@ from app.models.base import TimestampMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
     from app.models.user import User
-    from app.models.application import Application
-    from app.models.job import Job
 
 
 class MasterResume(UUIDPrimaryKeyMixin, TimestampMixin, Base):
@@ -107,9 +106,7 @@ class ResumeVersion(Base):
     )
 
     # ── Relationships ─────────────────────────────────────────────────────────
-    master_resume: Mapped[MasterResume] = relationship(
-        "MasterResume", back_populates="versions"
-    )
+    master_resume: Mapped[MasterResume] = relationship("MasterResume", back_populates="versions")
 
     def __repr__(self) -> str:
         return f"<ResumeVersion id={self.id} name={self.name!r}>"

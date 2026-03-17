@@ -1,6 +1,7 @@
 """
 Email processing Celery tasks.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -47,18 +48,16 @@ def sync_gmail_threads(
 async def _sync_gmail_threads_async(
     user_id: str, max_results: int, query: Optional[str]
 ) -> Dict[str, Any]:
-    from app.core.database import AsyncSessionLocal
-    from app.models.user import User
-    from app.models.email import EmailThread, EmailClassification
-    from app.integrations.gmail.client import GmailClient
-    from app.integrations.gmail.parser import parse_thread
-    from app.integrations.gmail.filters import is_recruiting_related
     from sqlalchemy import select
 
+    from app.core.database import AsyncSessionLocal
+    from app.integrations.gmail.client import GmailClient
+    from app.integrations.gmail.filters import is_recruiting_related
+    from app.models.email import EmailClassification, EmailThread
+    from app.models.user import User
+
     async with AsyncSessionLocal() as db:
-        result = await db.execute(
-            select(User).where(User.id == uuid.UUID(user_id))
-        )
+        result = await db.execute(select(User).where(User.id == uuid.UUID(user_id)))
         user = result.scalar_one_or_none()
         if user is None or not user.google_tokens:
             return {"skipped": True, "reason": "no google tokens"}
@@ -131,15 +130,14 @@ def classify_thread(self, thread_id: str) -> Dict[str, Any]:
 
 
 async def _classify_thread_async(thread_id: str) -> Dict[str, Any]:
-    from app.core.database import AsyncSessionLocal
-    from app.models.email import EmailThread, ParsedEmail
-    from app.agents.workflows.email_classification import run_email_classification_workflow
     from sqlalchemy import select
 
+    from app.agents.workflows.email_classification import run_email_classification_workflow
+    from app.core.database import AsyncSessionLocal
+    from app.models.email import EmailThread
+
     async with AsyncSessionLocal() as db:
-        result = await db.execute(
-            select(EmailThread).where(EmailThread.id == uuid.UUID(thread_id))
-        )
+        result = await db.execute(select(EmailThread).where(EmailThread.id == uuid.UUID(thread_id)))
         thread = result.scalar_one_or_none()
         if thread is None:
             return {"skipped": True}
@@ -181,15 +179,14 @@ def extract_email_entities(self, thread_id: str) -> Dict[str, Any]:
 
 
 async def _extract_entities_async(thread_id: str) -> Dict[str, Any]:
-    from app.core.database import AsyncSessionLocal
-    from app.models.email import EmailThread, ParsedEmail
-    from app.agents.workflows.email_classification import run_entity_extraction_workflow
     from sqlalchemy import select
 
+    from app.agents.workflows.email_classification import run_entity_extraction_workflow
+    from app.core.database import AsyncSessionLocal
+    from app.models.email import EmailThread, ParsedEmail
+
     async with AsyncSessionLocal() as db:
-        result = await db.execute(
-            select(EmailThread).where(EmailThread.id == uuid.UUID(thread_id))
-        )
+        result = await db.execute(select(EmailThread).where(EmailThread.id == uuid.UUID(thread_id)))
         thread = result.scalar_one_or_none()
         if thread is None:
             return {"skipped": True}
@@ -218,6 +215,7 @@ async def _extract_entities_async(thread_id: str) -> Dict[str, Any]:
         # Trigger calendar creation if interview found
         if entities.interview_datetime:
             from app.tasks.calendar_tasks import create_interview_event
+
             create_interview_event.delay(str(parsed.id), str(thread.user_id))
 
         # Link to application
@@ -243,27 +241,28 @@ def link_email_to_application(self, thread_id: str, user_id: str) -> Dict[str, A
 
 
 async def _link_email_async(thread_id: str, user_id: str) -> Dict[str, Any]:
-    from app.core.database import AsyncSessionLocal
-    from app.models.email import EmailThread, ParsedEmail
-    from app.models.application import Application
-    from app.models.job import Job
     from sqlalchemy import select
+
+    from app.core.database import AsyncSessionLocal
+    from app.models.application import Application
+    from app.models.email import EmailThread, ParsedEmail
+    from app.models.job import Job
 
     async with AsyncSessionLocal() as db:
         # Get thread with extracted entity
-        result = await db.execute(
-            select(EmailThread).where(EmailThread.id == uuid.UUID(thread_id))
-        )
+        result = await db.execute(select(EmailThread).where(EmailThread.id == uuid.UUID(thread_id)))
         thread = result.scalar_one_or_none()
         if thread is None or thread.application_id is not None:
             return {"skipped": True}
 
         # Get extracted company name
         parsed_result = await db.execute(
-            select(ParsedEmail).where(
+            select(ParsedEmail)
+            .where(
                 ParsedEmail.thread_id == thread.id,
                 ParsedEmail.extracted_company.isnot(None),
-            ).limit(1)
+            )
+            .limit(1)
         )
         parsed = parsed_result.scalar_one_or_none()
         if parsed is None or not parsed.extracted_company:

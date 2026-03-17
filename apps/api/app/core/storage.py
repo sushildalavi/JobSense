@@ -4,10 +4,10 @@ S3-compatible storage client.
 Wraps boto3 to provide async-friendly file operations for uploads,
 downloads, deletion, and presigned URL generation.
 """
+
 from __future__ import annotations
 
 import io
-from typing import Optional
 
 import boto3
 import structlog

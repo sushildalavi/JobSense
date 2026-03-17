@@ -1,10 +1,10 @@
 """
 Gmail email parser — extracts structured data from thread payloads.
 """
+
 from __future__ import annotations
 
 import re
-from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 

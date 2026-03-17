@@ -3,11 +3,11 @@ Auth endpoint tests.
 
 Covers: register, login, wrong-password, /me, token refresh.
 """
+
 from __future__ import annotations
 
 import pytest
 from httpx import AsyncClient
-
 
 pytestmark = pytest.mark.asyncio
 
@@ -97,7 +97,9 @@ class TestLogin:
 
 
 class TestGetMe:
-    async def test_get_me_authenticated(self, client: AsyncClient, test_user: dict, auth_headers: dict):
+    async def test_get_me_authenticated(
+        self, client: AsyncClient, test_user: dict, auth_headers: dict
+    ):
         """Authenticated user can fetch their own profile."""
         resp = await client.get("/api/v1/auth/me", headers=auth_headers)
         assert resp.status_code == 200, resp.text

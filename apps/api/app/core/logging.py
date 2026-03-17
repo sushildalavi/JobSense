@@ -6,6 +6,7 @@ Provides:
 - get_logger(): returns a bound structlog logger
 - RequestLoggingMiddleware: ASGI middleware that logs every request/response
 """
+
 from __future__ import annotations
 
 import logging

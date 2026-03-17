@@ -1,19 +1,19 @@
 """
 Authentication endpoints.
 """
+
 from __future__ import annotations
 
 from typing import Optional
 
 import structlog
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.dependencies import get_current_active_user, get_db, get_redis
+from app.api.v1.dependencies import get_current_active_user, get_db
 from app.models.user import User
 from app.schemas.auth import (
-    GoogleOAuthCallback,
     LoginRequest,
     PasswordResetConfirm,
     PasswordResetRequest,

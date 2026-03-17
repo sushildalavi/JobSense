@@ -1,6 +1,7 @@
 """
 Application service — CRUD, status transitions, event log.
 """
+
 from __future__ import annotations
 
 import uuid
@@ -9,7 +10,7 @@ from typing import List, Optional
 
 import structlog
 from fastapi import HTTPException, status
-from sqlalchemy import and_, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -23,9 +24,7 @@ class ApplicationService:
     def __init__(self, db: AsyncSession) -> None:
         self.db = db
 
-    async def create_application(
-        self, user_id: uuid.UUID, data: ApplicationCreate
-    ) -> Application:
+    async def create_application(self, user_id: uuid.UUID, data: ApplicationCreate) -> Application:
         # Prevent duplicate applications
         existing = await self.db.execute(
             select(Application).where(
@@ -95,9 +94,7 @@ class ApplicationService:
                 app.company_name = app.job.company_name  # type: ignore[attr-defined]
         return apps
 
-    async def get_application(
-        self, app_id: uuid.UUID, user_id: uuid.UUID
-    ) -> Application:
+    async def get_application(self, app_id: uuid.UUID, user_id: uuid.UUID) -> Application:
         result = await self.db.execute(
             select(Application)
             .options(
@@ -175,9 +172,7 @@ class ApplicationService:
         )
         return event
 
-    async def get_events(
-        self, app_id: uuid.UUID, user_id: uuid.UUID
-    ) -> List[ApplicationEvent]:
+    async def get_events(self, app_id: uuid.UUID, user_id: uuid.UUID) -> List[ApplicationEvent]:
         # Verify ownership
         await self.get_application(app_id, user_id)
         result = await self.db.execute(

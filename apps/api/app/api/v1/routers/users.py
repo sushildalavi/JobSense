@@ -1,12 +1,13 @@
 """
 User account endpoints.
 """
+
 from __future__ import annotations
 
 from datetime import datetime, timezone
 
 import structlog
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.dependencies import get_current_active_user, get_db
@@ -23,9 +24,11 @@ async def get_me(
     db: AsyncSession = Depends(get_db),
 ) -> UserProfile:
     """Return the current authenticated user with profile."""
-    from sqlalchemy.orm import selectinload
     from sqlalchemy import select
+    from sqlalchemy.orm import selectinload
+
     from app.models.user import User as UserModel
+
     result = await db.execute(
         select(UserModel)
         .options(selectinload(UserModel.profile))

@@ -1,6 +1,7 @@
 """
 Pydantic schemas for agent outputs.
 """
+
 from __future__ import annotations
 
 from datetime import datetime

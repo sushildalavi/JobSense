@@ -3,9 +3,9 @@ ApplyFlow API — main application entry point.
 
 Bootstraps FastAPI with lifespan, middleware, routers, and exception handlers.
 """
+
 from __future__ import annotations
 
-import time
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
@@ -16,16 +16,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from app.api.router import api_router
 from app.core.config import settings
 from app.core.database import init_db
-from app.core.logging import configure_logging, RequestLoggingMiddleware
+from app.core.logging import RequestLoggingMiddleware, configure_logging
 from app.core.redis import create_redis_pool
-from app.api.router import api_router
 
 logger = structlog.get_logger(__name__)
 
 
 # ─── Lifespan ────────────────────────────────────────────────────────────────
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
@@ -65,6 +66,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 
 # ─── Application factory ──────────────────────────────────────────────────────
+
 
 def create_app() -> FastAPI:
     app = FastAPI(
@@ -123,7 +125,9 @@ def create_app() -> FastAPI:
         )
 
     @app.exception_handler(RequestValidationError)
-    async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+    async def validation_exception_handler(
+        request: Request, exc: RequestValidationError
+    ) -> JSONResponse:
         logger.warning(
             "Validation error",
             path=request.url.path,

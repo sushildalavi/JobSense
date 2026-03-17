@@ -6,6 +6,7 @@ Provides:
 - created_at / updated_at timestamps
 - soft-delete support (deleted_at, is_deleted)
 """
+
 from __future__ import annotations
 
 import uuid
@@ -14,7 +15,7 @@ from typing import Optional
 
 from sqlalchemy import Boolean, DateTime, text
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
 
 

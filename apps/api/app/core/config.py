@@ -3,11 +3,12 @@ Application configuration via Pydantic BaseSettings.
 
 All settings are read from environment variables (or .env file).
 """
+
 from __future__ import annotations
 
 from typing import Optional
 
-from pydantic import computed_field, field_validator
+from pydantic import computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 

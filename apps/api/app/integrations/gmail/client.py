@@ -1,11 +1,11 @@
 """
 Gmail API client with OAuth2 support.
 """
+
 from __future__ import annotations
 
 import base64
-import email as email_lib
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import structlog
@@ -52,6 +52,7 @@ class GmailClient:
         Returns list of {id, snippet} dicts.
         """
         import asyncio
+
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(
             None,
@@ -87,15 +88,16 @@ class GmailClient:
     async def get_thread(self, thread_id: str) -> Optional[Dict[str, Any]]:
         """Fetch a thread and return parsed metadata."""
         import asyncio
+
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(None, self._get_thread_sync, thread_id)
 
     def _get_thread_sync(self, thread_id: str) -> Optional[Dict[str, Any]]:
         service = self._get_service()
         try:
-            thread = service.users().threads().get(
-                userId="me", id=thread_id, format="full"
-            ).execute()
+            thread = (
+                service.users().threads().get(userId="me", id=thread_id, format="full").execute()
+            )
         except HttpError as exc:
             logger.error("Gmail get_thread failed", thread_id=thread_id, error=str(exc))
             return None
@@ -104,21 +106,19 @@ class GmailClient:
         if not messages:
             return None
 
-        # Parse first and last message
-        first_msg = messages[0]
+        # Parse the last message for subject/body and aggregate participants across the thread.
         last_msg = messages[-1]
 
         subject = self._get_header(last_msg, "Subject")
-        participants = list({
-            self._get_header(m, "From")
-            for m in messages
-            if self._get_header(m, "From")
-        })
+        participants = list(
+            {self._get_header(m, "From") for m in messages if self._get_header(m, "From")}
+        )
 
         last_date_str = self._get_header(last_msg, "Date")
         last_message_at = None
         if last_date_str:
             from email.utils import parsedate_to_datetime
+
             try:
                 last_message_at = parsedate_to_datetime(last_date_str)
             except Exception:
@@ -174,6 +174,7 @@ class GmailClient:
         if not date_str:
             return None
         from email.utils import parsedate_to_datetime
+
         try:
             return parsedate_to_datetime(date_str)
         except Exception:

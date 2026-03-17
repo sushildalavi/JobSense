@@ -1,6 +1,7 @@
 """
 Redis client setup and dependency injection.
 """
+
 from __future__ import annotations
 
 from typing import AsyncGenerator, Optional

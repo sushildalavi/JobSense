@@ -1,23 +1,23 @@
 """
 User ORM model.
 """
+
 from __future__ import annotations
 
-import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
 from sqlalchemy import Boolean, DateTime, String, Text
-from sqlalchemy.dialects.postgresql import JSON, UUID
+from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 from app.models.base import SoftDeleteMixin, TimestampMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
+    from app.models.application import Application
     from app.models.profile import Profile
     from app.models.resume import MasterResume
-    from app.models.application import Application
 
 
 class User(UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin, Base):
@@ -25,9 +25,7 @@ class User(UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin, Base):
 
     __tablename__ = "users"
 
-    email: Mapped[str] = mapped_column(
-        String(320), unique=True, index=True, nullable=False
-    )
+    email: Mapped[str] = mapped_column(String(320), unique=True, index=True, nullable=False)
     hashed_password: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
     avatar_url: Mapped[Optional[str]] = mapped_column(Text, nullable=True)

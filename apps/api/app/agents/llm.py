@@ -4,12 +4,12 @@ LLM provider abstraction.
 get_llm(provider, model) → BaseChatModel
 Supports "openai" and "anthropic".
 """
+
 from __future__ import annotations
 
 from typing import Optional
 
 from langchain_core.language_models.chat_models import BaseChatModel
-
 
 _DEFAULT_MODELS = {
     "openai": "gpt-4o-mini",
@@ -44,6 +44,7 @@ def get_llm(
 
     if provider == "openai":
         from langchain_openai import ChatOpenAI
+
         return ChatOpenAI(
             model=model,
             api_key=settings.OPENAI_API_KEY or None,
@@ -52,6 +53,7 @@ def get_llm(
         )
     elif provider == "anthropic":
         from langchain_anthropic import ChatAnthropic
+
         return ChatAnthropic(
             model=model,
             api_key=settings.ANTHROPIC_API_KEY or None,
@@ -59,6 +61,4 @@ def get_llm(
             max_tokens=4096,
         )
     else:
-        raise ValueError(
-            f"Unsupported LLM provider: {provider!r}. Use 'openai' or 'anthropic'."
-        )
+        raise ValueError(f"Unsupported LLM provider: {provider!r}. Use 'openai' or 'anthropic'.")

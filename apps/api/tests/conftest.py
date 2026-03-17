@@ -10,15 +10,16 @@ Design decisions:
 - The test database URL is read from the DATABASE_URL environment variable
   (defaulting to the CI value) so there is no hard-coded connection string.
 """
+
 from __future__ import annotations
 
 import asyncio
 import os
-from typing import AsyncGenerator, Generator
+from typing import AsyncGenerator
 
 import pytest
 import pytest_asyncio
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import (
     AsyncConnection,
     AsyncSession,
@@ -46,8 +47,17 @@ else:
 # Import application pieces after env is configured
 # ---------------------------------------------------------------------------
 from app.core.database import Base, get_db  # noqa: E402
-from app.core.config import settings  # noqa: E402
-from app.models import user, profile, resume, job, application, document, email, calendar, agent  # noqa: F401, E402
+from app.models import (  # noqa: F401, E402
+    agent,
+    application,
+    calendar,
+    document,
+    email,
+    job,
+    profile,
+    resume,
+    user,
+)
 from main import app  # noqa: E402
 
 
@@ -130,6 +140,7 @@ async def client(async_session) -> AsyncGenerator[AsyncClient, None]:
     The `get_db` dependency is overridden to return the per-test session so
     HTTP requests and direct ORM assertions share the same transaction.
     """
+
     async def _override_get_db():
         yield async_session
 
@@ -153,6 +164,7 @@ async def test_user(async_session) -> dict:
     Insert a verified, active user and return a dict with id + plain credentials.
     """
     from passlib.context import CryptContext
+
     from app.models.user import User
 
     pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -193,6 +205,7 @@ async def auth_headers(client, test_user) -> dict:
 async def test_profile(async_session, test_user) -> dict:
     """Insert a profile for the test user."""
     import uuid
+
     from app.models.profile import Profile, RemotePreference, SeniorityLevel
 
     profile_obj = Profile(
@@ -218,7 +231,8 @@ async def test_profile(async_session, test_user) -> dict:
 async def test_job(async_session) -> dict:
     """Insert a single active job posting."""
     import uuid
-    from app.models.job import Job, JobSource, JobStatus, EmploymentType, JobSeniority
+
+    from app.models.job import EmploymentType, Job, JobSeniority, JobSource, JobStatus
 
     source = JobSource(
         name="LinkedIn (Test)",

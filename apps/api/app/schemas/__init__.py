@@ -1,66 +1,67 @@
 """
 Pydantic v2 schemas — barrel export.
 """
-from app.schemas.auth import (
-    LoginRequest,
-    RegisterRequest,
-    TokenResponse,
-    RefreshTokenRequest,
-    GoogleOAuthCallback,
-    PasswordResetRequest,
-    PasswordResetConfirm,
-)
-from app.schemas.user import UserBase, UserCreate, UserUpdate, UserResponse, UserProfile
-from app.schemas.profile import ProfileCreate, ProfileUpdate, ProfileResponse
-from app.schemas.resume import (
-    MasterResumeCreate,
-    MasterResumeUpdate,
-    MasterResumeResponse,
-    ResumeVersionCreate,
-    ResumeVersionResponse,
-    ParsedResumeData,
-    TailoringRequest,
-    TailoringResponse,
-)
-from app.schemas.job import (
-    JobResponse,
-    JobListItem,
-    JobFilter,
-    JobMatchResponse,
-    JobSourceResponse,
-    JobSearchRequest,
-    JobRankingResponse,
+
+from app.schemas.agent import AgentRunCreate, AgentRunResponse, WorkflowTriggerRequest
+from app.schemas.analytics import (
+    AnalyticsSummary,
+    DashboardStats,
+    FunnelStage,
+    ScoreBucket,
+    SourceStat,
+    WeeklyStat,
 )
 from app.schemas.application import (
     ApplicationCreate,
-    ApplicationUpdate,
-    ApplicationResponse,
-    ApplicationListItem,
     ApplicationEventResponse,
-    StatusTransitionRequest,
+    ApplicationListItem,
     ApplicationNoteCreate,
     ApplicationNoteResponse,
+    ApplicationResponse,
+    ApplicationUpdate,
+    StatusTransitionRequest,
 )
-from app.schemas.email import (
-    EmailThreadResponse,
-    ParsedEmailResponse,
-    EmailSyncRequest,
-    EmailClassificationResponse,
+from app.schemas.auth import (
+    GoogleOAuthCallback,
+    LoginRequest,
+    PasswordResetConfirm,
+    PasswordResetRequest,
+    RefreshTokenRequest,
+    RegisterRequest,
+    TokenResponse,
 )
 from app.schemas.calendar import (
-    CalendarEventResponse,
     CalendarEventCreate,
+    CalendarEventResponse,
     CalendarEventUpdate,
 )
-from app.schemas.analytics import (
-    DashboardStats,
-    FunnelStage,
-    WeeklyStat,
-    SourceStat,
-    ScoreBucket,
-    AnalyticsSummary,
+from app.schemas.email import (
+    EmailClassificationResponse,
+    EmailSyncRequest,
+    EmailThreadResponse,
+    ParsedEmailResponse,
 )
-from app.schemas.agent import AgentRunResponse, AgentRunCreate, WorkflowTriggerRequest
+from app.schemas.job import (
+    JobFilter,
+    JobListItem,
+    JobMatchResponse,
+    JobRankingResponse,
+    JobResponse,
+    JobSearchRequest,
+    JobSourceResponse,
+)
+from app.schemas.profile import ProfileCreate, ProfileResponse, ProfileUpdate
+from app.schemas.resume import (
+    MasterResumeCreate,
+    MasterResumeResponse,
+    MasterResumeUpdate,
+    ParsedResumeData,
+    ResumeVersionCreate,
+    ResumeVersionResponse,
+    TailoringRequest,
+    TailoringResponse,
+)
+from app.schemas.user import UserBase, UserCreate, UserProfile, UserResponse, UserUpdate
 
 __all__ = [
     "LoginRequest",

@@ -1,14 +1,15 @@
 """
 Analytics service — dashboard stats, funnel, weekly, sources, score distribution.
 """
+
 from __future__ import annotations
 
 import uuid
-from datetime import date, datetime, timedelta, timezone
-from typing import List, Optional
+from datetime import date, datetime, timedelta
+from typing import List
 
 import structlog
-from sqlalchemy import case, func, select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.application import Application, ApplicationStatus
@@ -40,7 +41,6 @@ class AnalyticsService:
         )
         status_map = {row.status: row.cnt for row in status_counts_result}
 
-        total_apps = sum(status_map.values())
         shortlisted = status_map.get(ApplicationStatus.shortlisted, 0)
         applied = status_map.get(ApplicationStatus.applied, 0)
         interviews = (
@@ -62,9 +62,7 @@ class AnalyticsService:
 
         # Average match score
         avg_score_result = await self.db.execute(
-            select(func.avg(JobMatch.match_score)).where(
-                JobMatch.user_id == user_id
-            )
+            select(func.avg(JobMatch.match_score)).where(JobMatch.user_id == user_id)
         )
         avg_match_score = avg_score_result.scalar()
 
@@ -128,9 +126,7 @@ class AnalyticsService:
             )
         return result
 
-    async def get_weekly_stats(
-        self, user_id: uuid.UUID, weeks: int = 12
-    ) -> List[WeeklyStat]:
+    async def get_weekly_stats(self, user_id: uuid.UUID, weeks: int = 12) -> List[WeeklyStat]:
         today = date.today()
         stats = []
         for w in range(weeks - 1, -1, -1):

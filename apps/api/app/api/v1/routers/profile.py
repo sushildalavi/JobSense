@@ -1,6 +1,7 @@
 """
 User profile endpoints.
 """
+
 from __future__ import annotations
 
 import structlog

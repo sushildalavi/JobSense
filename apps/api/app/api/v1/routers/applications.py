@@ -1,6 +1,7 @@
 """
 Application tracking endpoints.
 """
+
 from __future__ import annotations
 
 import uuid
@@ -10,7 +11,12 @@ import structlog
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.dependencies import get_current_active_user, get_db, get_pagination, PaginationParams
+from app.api.v1.dependencies import (
+    PaginationParams,
+    get_current_active_user,
+    get_db,
+    get_pagination,
+)
 from app.models.application import ApplicationStatus
 from app.models.user import User
 from app.schemas.application import (
@@ -23,7 +29,7 @@ from app.schemas.application import (
 )
 from app.schemas.calendar import CalendarEventResponse
 from app.schemas.email import EmailThreadResponse
-from app.schemas.resume import ResumeVersionResponse, TailoringRequest, TailoringResponse
+from app.schemas.resume import ResumeVersionResponse, TailoringRequest
 from app.services.application_service import ApplicationService
 
 logger = structlog.get_logger(__name__)
@@ -148,7 +154,9 @@ async def get_application_emails(
     """Get email threads linked to this application."""
     from sqlalchemy import select
     from sqlalchemy.orm import selectinload
+
     from app.models.email import EmailThread
+
     result = await db.execute(
         select(EmailThread)
         .options(selectinload(EmailThread.parsed_emails))
@@ -169,7 +177,9 @@ async def get_application_calendar(
 ) -> List[CalendarEventResponse]:
     """Get calendar events linked to this application."""
     from sqlalchemy import select
+
     from app.models.calendar import CalendarEvent
+
     result = await db.execute(
         select(CalendarEvent).where(
             CalendarEvent.application_id == app_id,
@@ -189,6 +199,7 @@ async def tailor_resume_for_application(
 ) -> dict:
     """Trigger resume tailoring for this application (async)."""
     from app.tasks.ai_tasks import tailor_resume
+
     tailor_resume.delay(str(app_id), str(data.resume_id))
     return {"message": "Resume tailoring triggered", "application_id": str(app_id)}
 
@@ -202,7 +213,9 @@ async def get_application_resume(
     """Get the tailored resume version linked to this application."""
     from sqlalchemy import select
     from sqlalchemy.orm import selectinload
+
     from app.models.application import Application
+
     result = await db.execute(
         select(Application)
         .options(selectinload(Application.resume_version))
@@ -212,5 +225,7 @@ async def get_application_resume(
     if application is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
     if application.resume_version is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No resume version linked")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="No resume version linked"
+        )
     return ResumeVersionResponse.model_validate(application.resume_version)

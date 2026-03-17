@@ -1,6 +1,7 @@
 """
 Apify API client — runs actors and retrieves results.
 """
+
 from __future__ import annotations
 
 import asyncio

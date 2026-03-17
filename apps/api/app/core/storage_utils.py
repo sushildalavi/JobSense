@@ -1,10 +1,10 @@
 """
 Async storage helpers — thin wrappers around the sync StorageClient.
 """
+
 from __future__ import annotations
 
 import asyncio
-from typing import Optional
 
 import structlog
 
@@ -22,6 +22,7 @@ async def upload_file(
     Runs the blocking boto3 call in the default executor.
     """
     from app.core.storage import storage
+
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(
         None,
@@ -32,6 +33,7 @@ async def upload_file(
 async def get_file(key: str) -> bytes:
     """Async wrapper around StorageClient.get_file."""
     from app.core.storage import storage
+
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(None, lambda: storage.get_file(key))
 
@@ -39,6 +41,7 @@ async def get_file(key: str) -> bytes:
 async def delete_file(key: str) -> None:
     """Async wrapper around StorageClient.delete_file."""
     from app.core.storage import storage
+
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(None, lambda: storage.delete_file(key))
 
@@ -50,6 +53,7 @@ async def generate_presigned_url(
 ) -> str:
     """Async wrapper around StorageClient.generate_presigned_url."""
     from app.core.storage import storage
+
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(
         None,

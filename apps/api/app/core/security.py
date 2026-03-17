@@ -1,6 +1,7 @@
 """
 Security utilities: JWT tokens, password hashing, OAuth2 scheme.
 """
+
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone

@@ -1,6 +1,7 @@
 """
 Email intelligence endpoints.
 """
+
 from __future__ import annotations
 
 import uuid
@@ -9,10 +10,15 @@ from typing import List
 import structlog
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
-from app.api.v1.dependencies import get_current_active_user, get_db, get_pagination, PaginationParams
+from app.api.v1.dependencies import (
+    PaginationParams,
+    get_current_active_user,
+    get_db,
+    get_pagination,
+)
 from app.models.email import EmailThread, ParsedEmail
 from app.models.user import User
 from app.schemas.email import (
@@ -53,6 +59,7 @@ async def get_thread(
 ) -> EmailThreadResponse:
     """Get a single thread with all parsed emails."""
     from fastapi import HTTPException
+
     result = await db.execute(
         select(EmailThread)
         .options(selectinload(EmailThread.parsed_emails))
@@ -72,6 +79,7 @@ async def sync_emails(
 ) -> dict:
     """Trigger Gmail sync for the current user."""
     from app.tasks.email_tasks import sync_gmail_threads
+
     sync_gmail_threads.delay(str(current_user.id), data.max_results, data.query)
     logger.info("Email sync triggered", user_id=str(current_user.id))
     return {"message": "Gmail sync triggered", "max_results": data.max_results}
@@ -85,6 +93,7 @@ async def reclassify_thread(
 ) -> EmailClassificationResponse:
     """Force reclassification of an email thread."""
     from fastapi import HTTPException
+
     from app.tasks.email_tasks import classify_thread
 
     result = await db.execute(

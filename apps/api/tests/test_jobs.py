@@ -3,14 +3,15 @@ Jobs endpoint tests.
 
 Covers: list (empty + with data), detail, shortlist action.
 """
+
 from __future__ import annotations
 
 import uuid
+
 import pytest
 from httpx import AsyncClient
 
-from app.models.job import Job, JobSource, JobStatus, EmploymentType, JobSeniority
-
+from app.models.job import Job, JobSource, JobStatus
 
 pytestmark = pytest.mark.asyncio
 

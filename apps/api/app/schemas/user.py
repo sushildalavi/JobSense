@@ -1,13 +1,14 @@
 """
 User Pydantic v2 schemas.
 """
+
 from __future__ import annotations
 
 import uuid
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, Field, model_config
+from pydantic import BaseModel, EmailStr, Field
 
 from app.schemas.profile import ProfileResponse
 
@@ -41,4 +42,5 @@ class UserResponse(UserBase):
 
 class UserProfile(UserResponse):
     """User response with nested profile data."""
+
     profile: Optional[ProfileResponse] = None

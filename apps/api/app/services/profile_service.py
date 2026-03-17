@@ -1,6 +1,7 @@
 """
 Profile service — get/create/update user profiles.
 """
+
 from __future__ import annotations
 
 import uuid
@@ -22,9 +23,7 @@ class ProfileService:
 
     async def get_or_create_profile(self, user_id: uuid.UUID) -> Profile:
         """Return existing profile or create an empty one."""
-        result = await self.db.execute(
-            select(Profile).where(Profile.user_id == user_id)
-        )
+        result = await self.db.execute(select(Profile).where(Profile.user_id == user_id))
         profile = result.scalar_one_or_none()
         if profile is None:
             profile = Profile(user_id=user_id)

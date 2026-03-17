@@ -1,9 +1,10 @@
 """
 Analytics endpoints.
 """
+
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List
 
 import structlog
 from fastapi import APIRouter, Depends, Query
@@ -11,15 +12,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.dependencies import get_current_active_user, get_db
 from app.models.user import User
+from app.schemas.agent import AgentRunResponse
 from app.schemas.analytics import (
-    AnalyticsSummary,
     DashboardStats,
     FunnelStage,
     ScoreBucket,
     SourceStat,
     WeeklyStat,
 )
-from app.schemas.agent import AgentRunResponse
 from app.services.analytics_service import AnalyticsService
 
 logger = structlog.get_logger(__name__)
@@ -85,7 +85,9 @@ async def agent_runs(
 ) -> List[AgentRunResponse]:
     """Return recent AI agent run history."""
     from sqlalchemy import select
+
     from app.models.agent import AgentRun
+
     result = await db.execute(
         select(AgentRun)
         .where(AgentRun.user_id == current_user.id)

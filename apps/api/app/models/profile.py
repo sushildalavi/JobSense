@@ -1,13 +1,14 @@
 """
 User Profile ORM model.
 """
+
 from __future__ import annotations
 
 import uuid
 from typing import TYPE_CHECKING, Optional
 
-import sqlalchemy as sa
-from sqlalchemy import Enum as SAEnum, ForeignKey, Integer, String
+from sqlalchemy import Enum as SAEnum
+from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 

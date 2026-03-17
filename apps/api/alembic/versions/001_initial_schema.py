@@ -4,11 +4,13 @@ Revision ID: 001
 Revises:
 Create Date: 2026-03-16 00:00:00.000000
 """
+
 from __future__ import annotations
 
-from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
+
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "001"
@@ -32,99 +34,160 @@ def upgrade() -> None:
 
     # Profile enums
     remote_preference_enum = postgresql.ENUM(
-        "remote", "hybrid", "onsite", "flexible",
+        "remote",
+        "hybrid",
+        "onsite",
+        "flexible",
         name="remote_preference_enum",
     )
     remote_preference_enum.create(op.get_bind(), checkfirst=True)
 
     seniority_level_enum = postgresql.ENUM(
-        "intern", "junior", "mid", "senior", "staff", "principal",
-        "director", "vp", "c_level",
+        "intern",
+        "junior",
+        "mid",
+        "senior",
+        "staff",
+        "principal",
+        "director",
+        "vp",
+        "c_level",
         name="seniority_level_enum",
     )
     seniority_level_enum.create(op.get_bind(), checkfirst=True)
 
     # Job enums
     employment_type_enum = postgresql.ENUM(
-        "full_time", "part_time", "contract", "internship", "freelance",
+        "full_time",
+        "part_time",
+        "contract",
+        "internship",
+        "freelance",
         name="employment_type_enum",
     )
     employment_type_enum.create(op.get_bind(), checkfirst=True)
 
     job_seniority_enum = postgresql.ENUM(
-        "intern", "junior", "mid", "senior", "staff", "principal",
-        "director", "vp", "c_level",
+        "intern",
+        "junior",
+        "mid",
+        "senior",
+        "staff",
+        "principal",
+        "director",
+        "vp",
+        "c_level",
         name="job_seniority_enum",
     )
     job_seniority_enum.create(op.get_bind(), checkfirst=True)
 
     job_status_enum = postgresql.ENUM(
-        "active", "expired", "removed",
+        "active",
+        "expired",
+        "removed",
         name="job_status_enum",
     )
     job_status_enum.create(op.get_bind(), checkfirst=True)
 
     # Application enums
     application_status_enum = postgresql.ENUM(
-        "discovered", "shortlisted", "tailored", "ready_to_apply", "applied",
-        "oa_received", "recruiter_contacted", "interview_scheduled",
-        "rejected", "offer", "archived",
+        "discovered",
+        "shortlisted",
+        "tailored",
+        "ready_to_apply",
+        "applied",
+        "oa_received",
+        "recruiter_contacted",
+        "interview_scheduled",
+        "rejected",
+        "offer",
+        "archived",
         name="application_status_enum",
     )
     application_status_enum.create(op.get_bind(), checkfirst=True)
 
     triggered_by_enum = postgresql.ENUM(
-        "user", "email_parser", "agent", "automation",
+        "user",
+        "email_parser",
+        "agent",
+        "automation",
         name="triggered_by_enum",
     )
     triggered_by_enum.create(op.get_bind(), checkfirst=True)
 
     # Document enums
     document_type_enum = postgresql.ENUM(
-        "master_resume", "tailored_resume", "cover_letter", "portfolio", "other",
+        "master_resume",
+        "tailored_resume",
+        "cover_letter",
+        "portfolio",
+        "other",
         name="document_type_enum",
     )
     document_type_enum.create(op.get_bind(), checkfirst=True)
 
     # Email enums
     email_classification_enum = postgresql.ENUM(
-        "recruiter_outreach", "oa_assessment", "interview_scheduling",
-        "interview_confirmation", "rejection", "offer", "follow_up",
-        "noise", "unclassified",
+        "recruiter_outreach",
+        "oa_assessment",
+        "interview_scheduling",
+        "interview_confirmation",
+        "rejection",
+        "offer",
+        "follow_up",
+        "noise",
+        "unclassified",
         name="email_classification_enum",
     )
     email_classification_enum.create(op.get_bind(), checkfirst=True)
 
     # Calendar enums
     calendar_event_status_enum = postgresql.ENUM(
-        "pending", "confirmed", "cancelled",
+        "pending",
+        "confirmed",
+        "cancelled",
         name="calendar_event_status_enum",
     )
     calendar_event_status_enum.create(op.get_bind(), checkfirst=True)
 
     # Agent enums
     workflow_name_enum = postgresql.ENUM(
-        "job_discovery", "job_matching", "resume_tailoring",
-        "email_classification", "email_extraction", "calendar_automation",
+        "job_discovery",
+        "job_matching",
+        "resume_tailoring",
+        "email_classification",
+        "email_extraction",
+        "calendar_automation",
         "follow_up_draft",
         name="workflow_name_enum",
     )
     workflow_name_enum.create(op.get_bind(), checkfirst=True)
 
     agent_run_status_enum = postgresql.ENUM(
-        "pending", "running", "completed", "failed", "cancelled",
+        "pending",
+        "running",
+        "completed",
+        "failed",
+        "cancelled",
         name="agent_run_status_enum",
     )
     agent_run_status_enum.create(op.get_bind(), checkfirst=True)
 
     session_type_enum = postgresql.ENUM(
-        "form_fill", "resume_upload", "survey", "other",
+        "form_fill",
+        "resume_upload",
+        "survey",
+        "other",
         name="session_type_enum",
     )
     session_type_enum.create(op.get_bind(), checkfirst=True)
 
     session_status_enum = postgresql.ENUM(
-        "pending", "running", "completed", "failed", "cancelled",
+        "pending",
+        "running",
+        "completed",
+        "failed",
+        "cancelled",
         name="session_status_enum",
     )
     session_status_enum.create(op.get_bind(), checkfirst=True)
@@ -189,7 +252,10 @@ def upgrade() -> None:
         sa.Column(
             "remote_preference",
             sa.Enum(
-                "remote", "hybrid", "onsite", "flexible",
+                "remote",
+                "hybrid",
+                "onsite",
+                "flexible",
                 name="remote_preference_enum",
                 create_type=False,
             ),
@@ -198,8 +264,15 @@ def upgrade() -> None:
         sa.Column(
             "seniority_level",
             sa.Enum(
-                "intern", "junior", "mid", "senior", "staff", "principal",
-                "director", "vp", "c_level",
+                "intern",
+                "junior",
+                "mid",
+                "senior",
+                "staff",
+                "principal",
+                "director",
+                "vp",
+                "c_level",
                 name="seniority_level_enum",
                 create_type=False,
             ),
@@ -318,7 +391,9 @@ def upgrade() -> None:
             nullable=False,
         ),
     )
-    op.create_index("ix_job_dedup_clusters_canonical_job_id", "job_dedup_clusters", ["canonical_job_id"])
+    op.create_index(
+        "ix_job_dedup_clusters_canonical_job_id", "job_dedup_clusters", ["canonical_job_id"]
+    )
 
     # =========================================================================
     # Table: jobs
@@ -349,7 +424,11 @@ def upgrade() -> None:
         sa.Column(
             "employment_type",
             sa.Enum(
-                "full_time", "part_time", "contract", "internship", "freelance",
+                "full_time",
+                "part_time",
+                "contract",
+                "internship",
+                "freelance",
                 name="employment_type_enum",
                 create_type=False,
             ),
@@ -358,8 +437,15 @@ def upgrade() -> None:
         sa.Column(
             "seniority",
             sa.Enum(
-                "intern", "junior", "mid", "senior", "staff", "principal",
-                "director", "vp", "c_level",
+                "intern",
+                "junior",
+                "mid",
+                "senior",
+                "staff",
+                "principal",
+                "director",
+                "vp",
+                "c_level",
                 name="job_seniority_enum",
                 create_type=False,
             ),
@@ -372,7 +458,9 @@ def upgrade() -> None:
         sa.Column("raw_description", sa.Text, nullable=True),
         sa.Column("cleaned_description", sa.Text, nullable=True),
         sa.Column("requirements", postgresql.JSON(astext_type=sa.Text()), nullable=True),
-        sa.Column("preferred_qualifications", postgresql.JSON(astext_type=sa.Text()), nullable=True),
+        sa.Column(
+            "preferred_qualifications", postgresql.JSON(astext_type=sa.Text()), nullable=True
+        ),
         sa.Column("responsibilities", postgresql.JSON(astext_type=sa.Text()), nullable=True),
         sa.Column("apply_url", sa.Text, nullable=True),
         sa.Column("posting_date", sa.DateTime(timezone=True), nullable=True),
@@ -386,7 +474,9 @@ def upgrade() -> None:
         sa.Column(
             "status",
             sa.Enum(
-                "active", "expired", "removed",
+                "active",
+                "expired",
+                "removed",
                 name="job_status_enum",
                 create_type=False,
             ),
@@ -543,9 +633,17 @@ def upgrade() -> None:
         sa.Column(
             "status",
             sa.Enum(
-                "discovered", "shortlisted", "tailored", "ready_to_apply", "applied",
-                "oa_received", "recruiter_contacted", "interview_scheduled",
-                "rejected", "offer", "archived",
+                "discovered",
+                "shortlisted",
+                "tailored",
+                "ready_to_apply",
+                "applied",
+                "oa_received",
+                "recruiter_contacted",
+                "interview_scheduled",
+                "rejected",
+                "offer",
+                "archived",
                 name="application_status_enum",
                 create_type=False,
             ),
@@ -640,9 +738,7 @@ def upgrade() -> None:
         ["id"],
         ondelete="SET NULL",
     )
-    op.create_index(
-        "ix_applications_resume_version_id", "applications", ["resume_version_id"]
-    )
+    op.create_index("ix_applications_resume_version_id", "applications", ["resume_version_id"])
 
     # =========================================================================
     # Table: application_events
@@ -665,9 +761,17 @@ def upgrade() -> None:
         sa.Column(
             "from_status",
             sa.Enum(
-                "discovered", "shortlisted", "tailored", "ready_to_apply", "applied",
-                "oa_received", "recruiter_contacted", "interview_scheduled",
-                "rejected", "offer", "archived",
+                "discovered",
+                "shortlisted",
+                "tailored",
+                "ready_to_apply",
+                "applied",
+                "oa_received",
+                "recruiter_contacted",
+                "interview_scheduled",
+                "rejected",
+                "offer",
+                "archived",
                 name="application_status_enum",
                 create_type=False,
             ),
@@ -676,9 +780,17 @@ def upgrade() -> None:
         sa.Column(
             "to_status",
             sa.Enum(
-                "discovered", "shortlisted", "tailored", "ready_to_apply", "applied",
-                "oa_received", "recruiter_contacted", "interview_scheduled",
-                "rejected", "offer", "archived",
+                "discovered",
+                "shortlisted",
+                "tailored",
+                "ready_to_apply",
+                "applied",
+                "oa_received",
+                "recruiter_contacted",
+                "interview_scheduled",
+                "rejected",
+                "offer",
+                "archived",
                 name="application_status_enum",
                 create_type=False,
             ),
@@ -687,7 +799,10 @@ def upgrade() -> None:
         sa.Column(
             "triggered_by",
             sa.Enum(
-                "user", "email_parser", "agent", "automation",
+                "user",
+                "email_parser",
+                "agent",
+                "automation",
                 name="triggered_by_enum",
                 create_type=False,
             ),
@@ -702,7 +817,9 @@ def upgrade() -> None:
             nullable=False,
         ),
     )
-    op.create_index("ix_application_events_application_id", "application_events", ["application_id"])
+    op.create_index(
+        "ix_application_events_application_id", "application_events", ["application_id"]
+    )
     op.create_index("ix_application_events_created_at", "application_events", ["created_at"])
 
     # =========================================================================
@@ -726,7 +843,11 @@ def upgrade() -> None:
         sa.Column(
             "document_type",
             sa.Enum(
-                "master_resume", "tailored_resume", "cover_letter", "portfolio", "other",
+                "master_resume",
+                "tailored_resume",
+                "cover_letter",
+                "portfolio",
+                "other",
                 name="document_type_enum",
                 create_type=False,
             ),
@@ -792,9 +913,15 @@ def upgrade() -> None:
         sa.Column(
             "classification",
             sa.Enum(
-                "recruiter_outreach", "oa_assessment", "interview_scheduling",
-                "interview_confirmation", "rejection", "offer", "follow_up",
-                "noise", "unclassified",
+                "recruiter_outreach",
+                "oa_assessment",
+                "interview_scheduling",
+                "interview_confirmation",
+                "rejection",
+                "offer",
+                "follow_up",
+                "noise",
+                "unclassified",
                 name="email_classification_enum",
                 create_type=False,
             ),
@@ -851,9 +978,15 @@ def upgrade() -> None:
         sa.Column(
             "classification",
             sa.Enum(
-                "recruiter_outreach", "oa_assessment", "interview_scheduling",
-                "interview_confirmation", "rejection", "offer", "follow_up",
-                "noise", "unclassified",
+                "recruiter_outreach",
+                "oa_assessment",
+                "interview_scheduling",
+                "interview_confirmation",
+                "rejection",
+                "offer",
+                "follow_up",
+                "noise",
+                "unclassified",
                 name="email_classification_enum",
                 create_type=False,
             ),
@@ -923,7 +1056,9 @@ def upgrade() -> None:
         sa.Column(
             "status",
             sa.Enum(
-                "pending", "confirmed", "cancelled",
+                "pending",
+                "confirmed",
+                "cancelled",
                 name="calendar_event_status_enum",
                 create_type=False,
             ),
@@ -943,7 +1078,9 @@ def upgrade() -> None:
     op.create_index("ix_calendar_events_user_id", "calendar_events", ["user_id"])
     op.create_index("ix_calendar_events_application_id", "calendar_events", ["application_id"])
     op.create_index("ix_calendar_events_parsed_email_id", "calendar_events", ["parsed_email_id"])
-    op.create_index("ix_calendar_events_google_event_id", "calendar_events", ["google_event_id"], unique=True)
+    op.create_index(
+        "ix_calendar_events_google_event_id", "calendar_events", ["google_event_id"], unique=True
+    )
     op.create_index("ix_calendar_events_start_datetime", "calendar_events", ["start_datetime"])
     op.create_index("ix_calendar_events_status", "calendar_events", ["status"])
 
@@ -968,8 +1105,12 @@ def upgrade() -> None:
         sa.Column(
             "workflow_name",
             sa.Enum(
-                "job_discovery", "job_matching", "resume_tailoring",
-                "email_classification", "email_extraction", "calendar_automation",
+                "job_discovery",
+                "job_matching",
+                "resume_tailoring",
+                "email_classification",
+                "email_extraction",
+                "calendar_automation",
                 "follow_up_draft",
                 name="workflow_name_enum",
                 create_type=False,
@@ -979,7 +1120,11 @@ def upgrade() -> None:
         sa.Column(
             "status",
             sa.Enum(
-                "pending", "running", "completed", "failed", "cancelled",
+                "pending",
+                "running",
+                "completed",
+                "failed",
+                "cancelled",
                 name="agent_run_status_enum",
                 create_type=False,
             ),
@@ -1034,7 +1179,10 @@ def upgrade() -> None:
         sa.Column(
             "session_type",
             sa.Enum(
-                "form_fill", "resume_upload", "survey", "other",
+                "form_fill",
+                "resume_upload",
+                "survey",
+                "other",
                 name="session_type_enum",
                 create_type=False,
             ),
@@ -1043,7 +1191,11 @@ def upgrade() -> None:
         sa.Column(
             "status",
             sa.Enum(
-                "pending", "running", "completed", "failed", "cancelled",
+                "pending",
+                "running",
+                "completed",
+                "failed",
+                "cancelled",
                 name="session_status_enum",
                 create_type=False,
             ),
@@ -1063,7 +1215,9 @@ def upgrade() -> None:
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
     )
     op.create_index("ix_automation_sessions_user_id", "automation_sessions", ["user_id"])
-    op.create_index("ix_automation_sessions_application_id", "automation_sessions", ["application_id"])
+    op.create_index(
+        "ix_automation_sessions_application_id", "automation_sessions", ["application_id"]
+    )
     op.create_index("ix_automation_sessions_status", "automation_sessions", ["status"])
 
 

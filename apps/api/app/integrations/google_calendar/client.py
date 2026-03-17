@@ -1,6 +1,7 @@
 """
 Google Calendar API client.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -96,21 +97,14 @@ class GoogleCalendarClient:
             },
             "reminders": {
                 "useDefault": False,
-                "overrides": [
-                    {"method": "popup", "minutes": m}
-                    for m in reminder_minutes
-                ],
+                "overrides": [{"method": "popup", "minutes": m} for m in reminder_minutes],
             },
         }
         if location:
             event_body["location"] = location
 
         try:
-            event = (
-                service.events()
-                .insert(calendarId=calendar_id, body=event_body)
-                .execute()
-            )
+            event = service.events().insert(calendarId=calendar_id, body=event_body).execute()
             logger.info("Google Calendar event created", event_id=event.get("id"))
             return event.get("id")
         except HttpError as exc:
@@ -138,11 +132,7 @@ class GoogleCalendarClient:
         service = self._get_service()
         try:
             # Fetch existing event
-            event = (
-                service.events()
-                .get(calendarId=calendar_id, eventId=google_event_id)
-                .execute()
-            )
+            event = service.events().get(calendarId=calendar_id, eventId=google_event_id).execute()
             event.update(updates)
             service.events().update(
                 calendarId=calendar_id, eventId=google_event_id, body=event
@@ -152,9 +142,7 @@ class GoogleCalendarClient:
             logger.error("Google Calendar update_event failed", error=str(exc))
             return False
 
-    async def delete_event(
-        self, google_event_id: str, calendar_id: str = "primary"
-    ) -> bool:
+    async def delete_event(self, google_event_id: str, calendar_id: str = "primary") -> bool:
         """Delete a Google Calendar event. Returns True on success."""
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(
@@ -164,9 +152,7 @@ class GoogleCalendarClient:
     def _delete_event_sync(self, google_event_id: str, calendar_id: str) -> bool:
         service = self._get_service()
         try:
-            service.events().delete(
-                calendarId=calendar_id, eventId=google_event_id
-            ).execute()
+            service.events().delete(calendarId=calendar_id, eventId=google_event_id).execute()
             return True
         except HttpError as exc:
             logger.error("Google Calendar delete_event failed", error=str(exc))
@@ -179,15 +165,12 @@ class GoogleCalendarClient:
     ) -> List[Dict[str, Any]]:
         """List upcoming calendar events starting from now."""
         loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(
-            None, self._list_events_sync, max_results, calendar_id
-        )
+        return await loop.run_in_executor(None, self._list_events_sync, max_results, calendar_id)
 
-    def _list_events_sync(
-        self, max_results: int, calendar_id: str
-    ) -> List[Dict[str, Any]]:
+    def _list_events_sync(self, max_results: int, calendar_id: str) -> List[Dict[str, Any]]:
         service = self._get_service()
         from datetime import timezone
+
         now = datetime.now(timezone.utc).isoformat()
         try:
             result = (

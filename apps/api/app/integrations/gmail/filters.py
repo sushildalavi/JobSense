@@ -1,9 +1,9 @@
 """
 Recruiting-related email detection filters.
 """
+
 from __future__ import annotations
 
-import re
 from typing import Any, Dict, List
 
 # Keywords that strongly indicate recruiting-related emails

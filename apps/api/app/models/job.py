@@ -6,6 +6,7 @@ Job-related ORM models:
 - JobClusterMember
 - JobMatch
 """
+
 from __future__ import annotations
 
 import enum
@@ -16,13 +17,15 @@ from typing import TYPE_CHECKING, Optional
 from sqlalchemy import (
     Boolean,
     DateTime,
-    Enum as SAEnum,
     Float,
     ForeignKey,
     Integer,
     String,
     Text,
     UniqueConstraint,
+)
+from sqlalchemy import (
+    Enum as SAEnum,
 )
 from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -37,6 +40,7 @@ if TYPE_CHECKING:
 
 
 # ── Enums ─────────────────────────────────────────────────────────────────────
+
 
 class EmploymentType(str, enum.Enum):
     full_time = "full_time"
@@ -66,14 +70,13 @@ class JobStatus(str, enum.Enum):
 
 # ── JobSource ─────────────────────────────────────────────────────────────────
 
+
 class JobSource(Base):
     """Represents an external data source from which jobs are ingested."""
 
     __tablename__ = "job_sources"
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
     connector_type: Mapped[str] = mapped_column(String(100), nullable=False)
     config: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
@@ -93,13 +96,12 @@ class JobSource(Base):
 
 # ── Job ───────────────────────────────────────────────────────────────────────
 
+
 class Job(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     """A normalised job posting from any source."""
 
     __tablename__ = "jobs"
-    __table_args__ = (
-        UniqueConstraint("source_id", "source_job_id", name="uq_job_source_job_id"),
-    )
+    __table_args__ = (UniqueConstraint("source_id", "source_job_id", name="uq_job_source_job_id"),)
 
     source_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -142,9 +144,7 @@ class Job(UUIDPrimaryKeyMixin, TimestampMixin, Base):
 
     # ── URLs / metadata ───────────────────────────────────────────────────────
     apply_url: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    posting_date: Mapped[Optional[datetime]] = mapped_column(
-        DateTime(timezone=True), nullable=True
-    )
+    posting_date: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     ingestion_timestamp: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
@@ -174,9 +174,7 @@ class Job(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         "JobDedupCluster", back_populates="members", foreign_keys=[dedup_cluster_id]
     )
     matches: Mapped[list[JobMatch]] = relationship("JobMatch", back_populates="job")
-    applications: Mapped[list[Application]] = relationship(
-        "Application", back_populates="job"
-    )
+    applications: Mapped[list[Application]] = relationship("Application", back_populates="job")
 
     def __repr__(self) -> str:
         return f"<Job id={self.id} title={self.title!r} company={self.company_name!r}>"
@@ -184,14 +182,13 @@ class Job(UUIDPrimaryKeyMixin, TimestampMixin, Base):
 
 # ── JobDedupCluster ───────────────────────────────────────────────────────────
 
+
 class JobDedupCluster(Base):
     """Groups duplicate job postings from different sources."""
 
     __tablename__ = "job_dedup_clusters"
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     canonical_job_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("jobs.id", ondelete="CASCADE"),
@@ -213,14 +210,13 @@ class JobDedupCluster(Base):
 
 # ── JobClusterMember ──────────────────────────────────────────────────────────
 
+
 class JobClusterMember(Base):
     """Maps individual jobs to their deduplication cluster with similarity score."""
 
     __tablename__ = "job_cluster_members"
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     cluster_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("job_dedup_clusters.id", ondelete="CASCADE"),
@@ -245,17 +241,14 @@ class JobClusterMember(Base):
 
 # ── JobMatch ──────────────────────────────────────────────────────────────────
 
+
 class JobMatch(Base):
     """Pre-computed match score between a job and a user's profile."""
 
     __tablename__ = "job_matches"
-    __table_args__ = (
-        UniqueConstraint("job_id", "user_id", name="uq_job_match_job_user"),
-    )
+    __table_args__ = (UniqueConstraint("job_id", "user_id", name="uq_job_match_job_user"),)
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     job_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("jobs.id", ondelete="CASCADE"),

@@ -1,16 +1,15 @@
 """
 Authentication service — registration, login, OAuth, tokens.
 """
+
 from __future__ import annotations
 
-import secrets
 import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Tuple
 
 import structlog
 from fastapi import HTTPException, status
-from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 from jose import JWTError, jwt
@@ -19,8 +18,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.security import create_access_token, get_password_hash, verify_password
-from app.models.user import User
 from app.models.profile import Profile
+from app.models.user import User
 from app.schemas.auth import RegisterRequest, TokenResponse
 
 logger = structlog.get_logger(__name__)
@@ -100,9 +99,7 @@ class AuthService:
 
     async def create_tokens(self, user: User) -> TokenResponse:
         """Issue an access token and refresh token for a user."""
-        access_token = create_access_token(
-            data={"sub": str(user.id), "email": user.email}
-        )
+        access_token = create_access_token(data={"sub": str(user.id), "email": user.email})
         refresh_token = self._create_refresh_token(user)
         return TokenResponse(
             access_token=access_token,
@@ -178,9 +175,7 @@ class AuthService:
         avatar_url = google_profile.get("picture")
 
         # Find or create user
-        result = await self.db.execute(
-            select(User).where(User.google_id == google_id)
-        )
+        result = await self.db.execute(select(User).where(User.google_id == google_id))
         user = result.scalar_one_or_none()
 
         if user is None:
@@ -261,9 +256,7 @@ class AuthService:
     async def reset_password(self, token: str, new_password: str) -> None:
         """Validate reset token and update password."""
         try:
-            payload = jwt.decode(
-                token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
-            )
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
             if payload.get("type") != "password_reset":
                 raise ValueError("Not a password reset token")
             user_id = uuid.UUID(payload["sub"])
