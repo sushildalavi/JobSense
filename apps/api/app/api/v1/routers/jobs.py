@@ -8,7 +8,7 @@ import uuid
 from typing import List, Optional
 
 import structlog
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.dependencies import (
@@ -136,7 +136,12 @@ async def shortlist_job(
     return {"application_id": str(application.id), "status": application.status}
 
 
-@router.delete("/{job_id}/shortlist", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{job_id}/shortlist",
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_model=None,
+    response_class=Response,
+)
 async def remove_shortlist(
     job_id: uuid.UUID,
     current_user: User = Depends(get_current_active_user),

@@ -8,7 +8,7 @@ import uuid
 from typing import List, Optional
 
 import structlog
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.dependencies import (
@@ -96,7 +96,12 @@ async def update_application(
     return ApplicationResponse.model_validate(application)
 
 
-@router.delete("/{app_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{app_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_model=None,
+    response_class=Response,
+)
 async def delete_application(
     app_id: uuid.UUID,
     current_user: User = Depends(get_current_active_user),

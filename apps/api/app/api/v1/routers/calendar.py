@@ -8,7 +8,7 @@ import uuid
 from typing import List
 
 import structlog
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -97,7 +97,12 @@ async def update_event(
     return CalendarEventResponse.model_validate(event)
 
 
-@router.delete("/events/{event_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/events/{event_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_model=None,
+    response_class=Response,
+)
 async def delete_event(
     event_id: uuid.UUID,
     current_user: User = Depends(get_current_active_user),
