@@ -3,7 +3,6 @@ name = "applyflow-api"
 version = "0.1.0"
 description = "ApplyFlow API — Agentic AI Job Search Copilot"
 authors = ["ApplyFlow Team"]
-python = "^3.11"
 
 [tool.poetry.dependencies]
 python = "^3.11"
