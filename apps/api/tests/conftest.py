@@ -13,11 +13,9 @@ Design decisions:
 
 from __future__ import annotations
 
-import asyncio
 import os
 from typing import AsyncGenerator
 
-import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import (
@@ -46,7 +44,7 @@ else:
 # ---------------------------------------------------------------------------
 # Import application pieces after env is configured
 # ---------------------------------------------------------------------------
-from app.core.database import Base, get_db  # noqa: E402
+from app.core.database import get_db  # noqa: E402
 from app.models import (  # noqa: F401, E402
     agent,
     application,
@@ -70,49 +68,25 @@ def pytest_configure(config):
 
 
 # ---------------------------------------------------------------------------
-# Event-loop fixture (session-scoped for async fixtures)
-# ---------------------------------------------------------------------------
-@pytest.fixture(scope="session")
-def event_loop():
-    """Create a single event loop for the entire test session."""
-    loop = asyncio.new_event_loop()
-    yield loop
-    loop.close()
-
-
-# ---------------------------------------------------------------------------
-# Database engine (session-scoped — shared across all tests)
-# ---------------------------------------------------------------------------
-@pytest_asyncio.fixture(scope="session")
-async def db_engine():
-    """Create the async engine and all tables once per test session."""
-    engine = create_async_engine(TEST_DATABASE_URL, echo=False)
-
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
-    yield engine
-
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-
-    await engine.dispose()
-
-
-# ---------------------------------------------------------------------------
 # Per-test database connection with savepoint rollback
 # ---------------------------------------------------------------------------
 @pytest_asyncio.fixture()
-async def db_connection(db_engine) -> AsyncGenerator[AsyncConnection, None]:
+async def db_connection() -> AsyncGenerator[AsyncConnection, None]:
     """
-    Yield a connection that wraps each test in a SAVEPOINT so every test
-    starts with a clean slate without re-creating the schema.
+    Yield a fresh connection per test and wrap it in an outer transaction.
+
+    CI runs Alembic before pytest, so the schema already exists. Creating a
+    fresh engine per test avoids reusing asyncpg connections across different
+    pytest-managed event loops.
     """
-    async with db_engine.connect() as conn:
-        await conn.begin()
-        await conn.begin_nested()  # SAVEPOINT
-        yield conn
-        await conn.rollback()
+    engine = create_async_engine(TEST_DATABASE_URL, echo=False)
+    async with engine.connect() as conn:
+        transaction = await conn.begin()
+        try:
+            yield conn
+        finally:
+            await transaction.rollback()
+    await engine.dispose()
 
 
 @pytest_asyncio.fixture()
@@ -122,6 +96,7 @@ async def async_session(db_connection) -> AsyncGenerator[AsyncSession, None]:
         bind=db_connection,
         class_=AsyncSession,
         expire_on_commit=False,
+        join_transaction_mode="create_savepoint",
         autocommit=False,
         autoflush=False,
     )
