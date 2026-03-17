@@ -76,6 +76,11 @@ class StatusTransitionRequest(BaseModel):
     notes: Optional[str] = None
 
 
+class LegacyStatusTransitionRequest(BaseModel):
+    status: ApplicationStatus
+    notes: Optional[str] = None
+
+
 class ApplicationNoteCreate(BaseModel):
     content: str = Field(min_length=1, max_length=10000)
 

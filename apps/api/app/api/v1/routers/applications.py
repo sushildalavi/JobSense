@@ -25,6 +25,7 @@ from app.schemas.application import (
     ApplicationListItem,
     ApplicationResponse,
     ApplicationUpdate,
+    LegacyStatusTransitionRequest,
     StatusTransitionRequest,
 )
 from app.schemas.calendar import CalendarEventResponse
@@ -136,6 +137,25 @@ async def transition_status(
         triggered_by=data.triggered_by,
     )
     return ApplicationEventResponse.model_validate(event)
+
+
+@router.patch("/{app_id}/status", response_model=ApplicationResponse)
+async def transition_status_legacy(
+    app_id: uuid.UUID,
+    data: LegacyStatusTransitionRequest,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+) -> ApplicationResponse:
+    """Backward-compatible status transition endpoint for older clients/tests."""
+    service = ApplicationService(db)
+    await service.transition_status(
+        app_id=app_id,
+        user_id=current_user.id,
+        new_status=data.status,
+        notes=data.notes,
+    )
+    application = await service.get_application(app_id, current_user.id)
+    return ApplicationResponse.model_validate(application)
 
 
 @router.get("/{app_id}/events", response_model=List[ApplicationEventResponse])

@@ -15,6 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.models.application import Application, ApplicationEvent, ApplicationStatus, TriggeredBy
+from app.models.job import Job
 from app.schemas.application import ApplicationCreate, ApplicationUpdate
 
 logger = structlog.get_logger(__name__)
@@ -25,6 +26,10 @@ class ApplicationService:
         self.db = db
 
     async def create_application(self, user_id: uuid.UUID, data: ApplicationCreate) -> Application:
+        job = await self.db.get(Job, data.job_id)
+        if job is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+
         # Prevent duplicate applications
         existing = await self.db.execute(
             select(Application).where(
