@@ -138,16 +138,14 @@ async def test_user(async_session) -> dict:
     """
     Insert a verified, active user and return a dict with id + plain credentials.
     """
-    from passlib.context import CryptContext
-
+    from app.core.security import get_password_hash
     from app.models.user import User
 
-    pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
     plain_password = "TestPass123"
 
     user_obj = User(
         email="test@applyflow.dev",
-        hashed_password=pwd_ctx.hash(plain_password),
+        hashed_password=get_password_hash(plain_password),
         full_name="Test User",
         is_active=True,
         is_verified=True,
