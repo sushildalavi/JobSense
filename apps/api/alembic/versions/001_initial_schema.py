@@ -39,6 +39,7 @@ def upgrade() -> None:
         "onsite",
         "flexible",
         name="remote_preference_enum",
+        create_type=False,
     )
     remote_preference_enum.create(op.get_bind(), checkfirst=True)
 
@@ -53,6 +54,7 @@ def upgrade() -> None:
         "vp",
         "c_level",
         name="seniority_level_enum",
+        create_type=False,
     )
     seniority_level_enum.create(op.get_bind(), checkfirst=True)
 
@@ -64,6 +66,7 @@ def upgrade() -> None:
         "internship",
         "freelance",
         name="employment_type_enum",
+        create_type=False,
     )
     employment_type_enum.create(op.get_bind(), checkfirst=True)
 
@@ -78,6 +81,7 @@ def upgrade() -> None:
         "vp",
         "c_level",
         name="job_seniority_enum",
+        create_type=False,
     )
     job_seniority_enum.create(op.get_bind(), checkfirst=True)
 
@@ -86,6 +90,7 @@ def upgrade() -> None:
         "expired",
         "removed",
         name="job_status_enum",
+        create_type=False,
     )
     job_status_enum.create(op.get_bind(), checkfirst=True)
 
@@ -103,6 +108,7 @@ def upgrade() -> None:
         "offer",
         "archived",
         name="application_status_enum",
+        create_type=False,
     )
     application_status_enum.create(op.get_bind(), checkfirst=True)
 
@@ -112,6 +118,7 @@ def upgrade() -> None:
         "agent",
         "automation",
         name="triggered_by_enum",
+        create_type=False,
     )
     triggered_by_enum.create(op.get_bind(), checkfirst=True)
 
@@ -123,6 +130,7 @@ def upgrade() -> None:
         "portfolio",
         "other",
         name="document_type_enum",
+        create_type=False,
     )
     document_type_enum.create(op.get_bind(), checkfirst=True)
 
@@ -138,6 +146,7 @@ def upgrade() -> None:
         "noise",
         "unclassified",
         name="email_classification_enum",
+        create_type=False,
     )
     email_classification_enum.create(op.get_bind(), checkfirst=True)
 
@@ -147,6 +156,7 @@ def upgrade() -> None:
         "confirmed",
         "cancelled",
         name="calendar_event_status_enum",
+        create_type=False,
     )
     calendar_event_status_enum.create(op.get_bind(), checkfirst=True)
 
@@ -160,6 +170,7 @@ def upgrade() -> None:
         "calendar_automation",
         "follow_up_draft",
         name="workflow_name_enum",
+        create_type=False,
     )
     workflow_name_enum.create(op.get_bind(), checkfirst=True)
 
@@ -170,6 +181,7 @@ def upgrade() -> None:
         "failed",
         "cancelled",
         name="agent_run_status_enum",
+        create_type=False,
     )
     agent_run_status_enum.create(op.get_bind(), checkfirst=True)
 
@@ -179,6 +191,7 @@ def upgrade() -> None:
         "survey",
         "other",
         name="session_type_enum",
+        create_type=False,
     )
     session_type_enum.create(op.get_bind(), checkfirst=True)
 
@@ -189,6 +202,7 @@ def upgrade() -> None:
         "failed",
         "cancelled",
         name="session_status_enum",
+        create_type=False,
     )
     session_status_enum.create(op.get_bind(), checkfirst=True)
 
@@ -251,7 +265,7 @@ def upgrade() -> None:
         sa.Column("preferred_locations", postgresql.JSON(astext_type=sa.Text()), nullable=True),
         sa.Column(
             "remote_preference",
-            sa.Enum(
+            postgresql.ENUM(
                 "remote",
                 "hybrid",
                 "onsite",
@@ -263,7 +277,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "seniority_level",
-            sa.Enum(
+            postgresql.ENUM(
                 "intern",
                 "junior",
                 "mid",
@@ -423,7 +437,7 @@ def upgrade() -> None:
         sa.Column("is_onsite", sa.Boolean, nullable=False, server_default=sa.text("false")),
         sa.Column(
             "employment_type",
-            sa.Enum(
+            postgresql.ENUM(
                 "full_time",
                 "part_time",
                 "contract",
@@ -436,7 +450,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "seniority",
-            sa.Enum(
+            postgresql.ENUM(
                 "intern",
                 "junior",
                 "mid",
@@ -473,7 +487,7 @@ def upgrade() -> None:
         sa.Column("embedding", postgresql.JSON(astext_type=sa.Text()), nullable=True),
         sa.Column(
             "status",
-            sa.Enum(
+            postgresql.ENUM(
                 "active",
                 "expired",
                 "removed",
@@ -632,7 +646,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "status",
-            sa.Enum(
+            postgresql.ENUM(
                 "discovered",
                 "shortlisted",
                 "tailored",
@@ -760,7 +774,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "from_status",
-            sa.Enum(
+            postgresql.ENUM(
                 "discovered",
                 "shortlisted",
                 "tailored",
@@ -779,7 +793,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "to_status",
-            sa.Enum(
+            postgresql.ENUM(
                 "discovered",
                 "shortlisted",
                 "tailored",
@@ -798,7 +812,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "triggered_by",
-            sa.Enum(
+            postgresql.ENUM(
                 "user",
                 "email_parser",
                 "agent",
@@ -842,7 +856,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "document_type",
-            sa.Enum(
+            postgresql.ENUM(
                 "master_resume",
                 "tailored_resume",
                 "cover_letter",
@@ -912,7 +926,7 @@ def upgrade() -> None:
         sa.Column("message_count", sa.Integer, nullable=False, server_default="1"),
         sa.Column(
             "classification",
-            sa.Enum(
+            postgresql.ENUM(
                 "recruiter_outreach",
                 "oa_assessment",
                 "interview_scheduling",
@@ -977,7 +991,7 @@ def upgrade() -> None:
         sa.Column("cleaned_body", sa.Text, nullable=True),
         sa.Column(
             "classification",
-            sa.Enum(
+            postgresql.ENUM(
                 "recruiter_outreach",
                 "oa_assessment",
                 "interview_scheduling",
@@ -1055,7 +1069,7 @@ def upgrade() -> None:
         sa.Column("location", sa.Text, nullable=True),
         sa.Column(
             "status",
-            sa.Enum(
+            postgresql.ENUM(
                 "pending",
                 "confirmed",
                 "cancelled",
@@ -1104,7 +1118,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "workflow_name",
-            sa.Enum(
+            postgresql.ENUM(
                 "job_discovery",
                 "job_matching",
                 "resume_tailoring",
@@ -1119,7 +1133,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "status",
-            sa.Enum(
+            postgresql.ENUM(
                 "pending",
                 "running",
                 "completed",
@@ -1178,7 +1192,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "session_type",
-            sa.Enum(
+            postgresql.ENUM(
                 "form_fill",
                 "resume_upload",
                 "survey",
@@ -1190,7 +1204,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "status",
-            sa.Enum(
+            postgresql.ENUM(
                 "pending",
                 "running",
                 "completed",
