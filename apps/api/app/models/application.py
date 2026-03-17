@@ -87,7 +87,10 @@ class Application(UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin, Base):
     # ── Relationships ─────────────────────────────────────────────────────────
     user: Mapped[User] = relationship("User", back_populates="applications")
     job: Mapped[Job] = relationship("Job", back_populates="applications")
-    resume_version: Mapped[Optional[ResumeVersion]] = relationship("ResumeVersion")
+    resume_version: Mapped[Optional[ResumeVersion]] = relationship(
+        "ResumeVersion",
+        foreign_keys=[resume_version_id],
+    )
     events: Mapped[list[ApplicationEvent]] = relationship(
         "ApplicationEvent", back_populates="application", order_by="ApplicationEvent.created_at"
     )
