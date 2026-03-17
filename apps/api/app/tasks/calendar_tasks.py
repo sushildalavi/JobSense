@@ -126,7 +126,6 @@ def sync_google_calendar(self, user_id: str) -> Dict[str, Any]:
 
 
 async def _sync_calendar_async(user_id: str) -> Dict[str, Any]:
-
     from sqlalchemy import select
 
     from app.core.database import AsyncSessionLocal
