@@ -1,0 +1,113 @@
+version: "3.9"
+
+# =============================================================================
+# ApplyFlow — Docker Compose Override (Development hot-reload)
+#
+# This file is automatically merged with docker-compose.yml when you run
+# `docker-compose up`. It adds volume mounts and hot-reload for local dev.
+# =============================================================================
+
+services:
+  # ─── PostgreSQL ─────────────────────────────────────────────────────────────
+  postgres:
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: applyflow
+      POSTGRES_PASSWORD: applyflow
+      POSTGRES_DB: applyflow
+
+  # ─── Redis ──────────────────────────────────────────────────────────────────
+  redis:
+    ports:
+      - "6379:6379"
+
+  # ─── FastAPI Backend (hot-reload via uvicorn --reload) ───────────────────────
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      # Mount source code so changes are reflected without rebuild
+      - ./apps/api:/app
+      # Preserve Python packages installed in the image
+      - /app/.venv
+    environment:
+      ENVIRONMENT: development
+      DATABASE_URL: postgresql://applyflow:applyflow@postgres:5432/applyflow
+      REDIS_URL: redis://redis:6379/0
+      LOG_LEVEL: DEBUG
+    command: >
+      uvicorn main:app
+        --host 0.0.0.0
+        --port 8000
+        --reload
+        --reload-dir /app
+        --log-level debug
+    ports:
+      - "8000:8000"
+
+  # ─── Celery Worker (auto-restart on code change via watchdog) ────────────────
+  worker:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./apps/api:/app
+      - /app/.venv
+    environment:
+      ENVIRONMENT: development
+      DATABASE_URL: postgresql://applyflow:applyflow@postgres:5432/applyflow
+      REDIS_URL: redis://redis:6379/0
+      LOG_LEVEL: DEBUG
+    command: >
+      watchmedo auto-restart
+        --directory=/app
+        --pattern=*.py
+        --recursive
+        -- celery -A app.workers.celery_app worker
+           --loglevel=debug
+           --concurrency=2
+           -Q ingestion,matching,ai,email,calendar,default
+
+  # ─── Celery Beat (Scheduler) ─────────────────────────────────────────────────
+  beat:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./apps/api:/app
+      - /app/.venv
+    environment:
+      ENVIRONMENT: development
+      DATABASE_URL: postgresql://applyflow:applyflow@postgres:5432/applyflow
+      REDIS_URL: redis://redis:6379/0
+    command: celery -A app.workers.celery_app beat --loglevel=info
+
+  # ─── Next.js Frontend (hot-reload via Next.js dev server) ───────────────────
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      # Mount source for hot module replacement
+      - ./apps/web:/app
+      - ./packages:/packages
+      # Preserve node_modules installed in the image
+      - /app/node_modules
+      - /app/.next
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+      NODE_ENV: development
+    command: pnpm dev
+    ports:
+      - "3000:3000"
+
+  # ─── Flower (Celery monitoring UI) ───────────────────────────────────────────
+  flower:
+    ports:
+      - "5555:5555"

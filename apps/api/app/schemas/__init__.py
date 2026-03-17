@@ -1,0 +1,120 @@
+"""
+Pydantic v2 schemas — barrel export.
+"""
+from app.schemas.auth import (
+    LoginRequest,
+    RegisterRequest,
+    TokenResponse,
+    RefreshTokenRequest,
+    GoogleOAuthCallback,
+    PasswordResetRequest,
+    PasswordResetConfirm,
+)
+from app.schemas.user import UserBase, UserCreate, UserUpdate, UserResponse, UserProfile
+from app.schemas.profile import ProfileCreate, ProfileUpdate, ProfileResponse
+from app.schemas.resume import (
+    MasterResumeCreate,
+    MasterResumeUpdate,
+    MasterResumeResponse,
+    ResumeVersionCreate,
+    ResumeVersionResponse,
+    ParsedResumeData,
+    TailoringRequest,
+    TailoringResponse,
+)
+from app.schemas.job import (
+    JobResponse,
+    JobListItem,
+    JobFilter,
+    JobMatchResponse,
+    JobSourceResponse,
+    JobSearchRequest,
+    JobRankingResponse,
+)
+from app.schemas.application import (
+    ApplicationCreate,
+    ApplicationUpdate,
+    ApplicationResponse,
+    ApplicationListItem,
+    ApplicationEventResponse,
+    StatusTransitionRequest,
+    ApplicationNoteCreate,
+    ApplicationNoteResponse,
+)
+from app.schemas.email import (
+    EmailThreadResponse,
+    ParsedEmailResponse,
+    EmailSyncRequest,
+    EmailClassificationResponse,
+)
+from app.schemas.calendar import (
+    CalendarEventResponse,
+    CalendarEventCreate,
+    CalendarEventUpdate,
+)
+from app.schemas.analytics import (
+    DashboardStats,
+    FunnelStage,
+    WeeklyStat,
+    SourceStat,
+    ScoreBucket,
+    AnalyticsSummary,
+)
+from app.schemas.agent import AgentRunResponse, AgentRunCreate, WorkflowTriggerRequest
+
+__all__ = [
+    "LoginRequest",
+    "RegisterRequest",
+    "TokenResponse",
+    "RefreshTokenRequest",
+    "GoogleOAuthCallback",
+    "PasswordResetRequest",
+    "PasswordResetConfirm",
+    "UserBase",
+    "UserCreate",
+    "UserUpdate",
+    "UserResponse",
+    "UserProfile",
+    "ProfileCreate",
+    "ProfileUpdate",
+    "ProfileResponse",
+    "MasterResumeCreate",
+    "MasterResumeUpdate",
+    "MasterResumeResponse",
+    "ResumeVersionCreate",
+    "ResumeVersionResponse",
+    "ParsedResumeData",
+    "TailoringRequest",
+    "TailoringResponse",
+    "JobResponse",
+    "JobListItem",
+    "JobFilter",
+    "JobMatchResponse",
+    "JobSourceResponse",
+    "JobSearchRequest",
+    "JobRankingResponse",
+    "ApplicationCreate",
+    "ApplicationUpdate",
+    "ApplicationResponse",
+    "ApplicationListItem",
+    "ApplicationEventResponse",
+    "StatusTransitionRequest",
+    "ApplicationNoteCreate",
+    "ApplicationNoteResponse",
+    "EmailThreadResponse",
+    "ParsedEmailResponse",
+    "EmailSyncRequest",
+    "EmailClassificationResponse",
+    "CalendarEventResponse",
+    "CalendarEventCreate",
+    "CalendarEventUpdate",
+    "DashboardStats",
+    "FunnelStage",
+    "WeeklyStat",
+    "SourceStat",
+    "ScoreBucket",
+    "AnalyticsSummary",
+    "AgentRunResponse",
+    "AgentRunCreate",
+    "WorkflowTriggerRequest",
+]
