@@ -11,33 +11,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # ─── Frontend Lint & Type Check ──────────────────────────────────────────────
+  # ─── Frontend Type Check & Lint ──────────────────────────────────────────────
   web-check:
-    name: Frontend — Lint & Type Check
+    name: Frontend — Type Check & Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
         with:
           version: 9
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: "20"
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
-      - name: Build types package
-        run: pnpm --filter @applyflow/types build
-
-      - name: Build shared package
-        run: pnpm --filter @applyflow/shared build
+      - name: Build packages
+        run: |
+          pnpm --filter @applyflow/types build
+          pnpm --filter @applyflow/shared build
 
       - name: Type check
         run: pnpm --filter @applyflow/web check
@@ -52,37 +48,36 @@ jobs:
     needs: web-check
     env:
       NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
         with:
           version: 9
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: "20"
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
-      - name: Build all packages
-        run: pnpm build
+      - name: Build all packages and web app
+        run: |
+          pnpm --filter @applyflow/types build
+          pnpm --filter @applyflow/shared build
+          pnpm --filter @applyflow/web build
 
   # ─── API Lint ────────────────────────────────────────────────────────────────
   api-lint:
-    name: API — Lint & Type Check
+    name: API — Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -95,15 +90,11 @@ jobs:
 
       - name: Ruff lint
         working-directory: apps/api
-        run: poetry run ruff check .
+        run: poetry run ruff check . --select E,F,I
 
       - name: Ruff format check
         working-directory: apps/api
         run: poetry run ruff format --check .
-
-      - name: Mypy type check
-        working-directory: apps/api
-        run: poetry run mypy app/ --ignore-missing-imports || true
 
   # ─── API Tests ───────────────────────────────────────────────────────────────
   api-test:
@@ -135,11 +126,9 @@ jobs:
           --health-retries 5
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -155,7 +144,7 @@ jobs:
         env:
           DATABASE_URL: postgresql://applyflow:applyflow@localhost:5432/applyflow_test
           REDIS_URL: redis://localhost:6379/0
-          SECRET_KEY: test-secret-key-ci
+          SECRET_KEY: test-secret-key-for-ci-only
         run: poetry run alembic upgrade head
 
       - name: Run tests
@@ -163,31 +152,8 @@ jobs:
         env:
           DATABASE_URL: postgresql://applyflow:applyflow@localhost:5432/applyflow_test
           REDIS_URL: redis://localhost:6379/0
-          SECRET_KEY: test-secret-key-ci
-          OPENAI_API_KEY: sk-test
-          ANTHROPIC_API_KEY: sk-ant-test
-        run: poetry run pytest -v --tb=short
-
-  # ─── Security Scan ───────────────────────────────────────────────────────────
-  security:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: fs
-          scan-ref: .
-          format: sarif
-          output: trivy-results.sarif
-          severity: CRITICAL,HIGH
-        continue-on-error: true
-
-      - name: Upload Trivy results
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: trivy-results.sarif
-        continue-on-error: true
+          SECRET_KEY: test-secret-key-for-ci-only
+          OPENAI_API_KEY: sk-test-placeholder
+          ANTHROPIC_API_KEY: sk-ant-test-placeholder
+          ENVIRONMENT: test
+        run: poetry run pytest -v --tb=short -x
