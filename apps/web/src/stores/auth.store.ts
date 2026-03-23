@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { User } from '@applyflow/types'
+import type { User } from '@jobsense/types'
 import { loginApi, getMeApi, logoutApi } from '@/api/auth'
 import { API_BASE_URL } from '@/lib/constants'
 

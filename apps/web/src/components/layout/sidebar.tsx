@@ -62,7 +62,7 @@ export function Sidebar() {
                   transition={{ duration: 0.2 }}
                   className="text-lg font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent whitespace-nowrap overflow-hidden"
                 >
-                  ApplyFlow
+                  JobSense
                 </motion.span>
               )}
             </AnimatePresence>

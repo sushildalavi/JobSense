@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import type { ApplicationListItem, ApplicationStatus } from '@applyflow/types'
+import type { ApplicationListItem, ApplicationStatus } from '@jobsense/types'
 import { StatusBadge } from './status-badge'
 import { formatDate } from '@/lib/utils'
 import { STATUS_LABELS, STATUS_DOT_COLORS } from '@/lib/constants'

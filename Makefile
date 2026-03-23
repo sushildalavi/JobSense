@@ -1,5 +1,5 @@
 # =============================================================================
-# ApplyFlow — Developer Makefile
+# JobSense — Developer Makefile
 # =============================================================================
 
 .PHONY: help setup setup-dev dev build clean docker-up docker-down migrate migrate-create seed test test-api test-web lint format type-check
@@ -36,7 +36,7 @@ setup-dev: ## Full first-time developer setup (Docker + migrations + seed data)
 	@echo ""
 	@echo "✓ Development environment ready!"
 	@echo "  Run 'make dev' to start all services."
-	@echo "  Demo credentials: demo@applyflow.dev / DemoPass123"
+	@echo "  Demo credentials: demo@jobsense.dev / DemoPass123"
 
 # ─── Development ─────────────────────────────────────────────────────────────
 dev: ## Start all dev servers (frontend + backend + infra)
@@ -113,7 +113,7 @@ type-check: ## Run type checkers (mypy on API, tsc on web)
 	@echo "→ Running mypy on API..."
 	cd apps/api && mypy app/ --ignore-missing-imports || true
 	@echo "→ Running tsc on web..."
-	pnpm --filter @applyflow/web check || pnpm --filter @applyflow/web tsc --noEmit || true
+	pnpm --filter @jobsense/web check || pnpm --filter @jobsense/web tsc --noEmit || true
 
 # ─── Build ───────────────────────────────────────────────────────────────────
 build: ## Build all packages and apps

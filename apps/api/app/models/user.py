@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 
 class User(UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin, Base):
-    """Represents an ApplyFlow user account."""
+    """Represents an JobSense user account."""
 
     __tablename__ = "users"
 

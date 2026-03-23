@@ -1,1 +1,1 @@
-"""ApplyFlow API test suite."""
+"""JobSense API test suite."""

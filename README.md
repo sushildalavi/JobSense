@@ -1,9 +1,9 @@
-# ApplyFlow
+# JobSense
 
 > Your AI-powered job search operating system. Discover jobs, tailor resumes, track applications, and automate interview scheduling — all from one intelligent dashboard.
 
-[![CI](https://github.com/sushildalavi/ApplyFlow/actions/workflows/ci.yml/badge.svg)](https://github.com/sushildalavi/ApplyFlow/actions/workflows/ci.yml)
-[![Deploy](https://github.com/sushildalavi/ApplyFlow/actions/workflows/deploy.yml/badge.svg)](https://github.com/sushildalavi/ApplyFlow/actions/workflows/deploy.yml)
+[![CI](https://github.com/sushildalavi/JobSense/actions/workflows/ci.yml/badge.svg)](https://github.com/sushildalavi/JobSense/actions/workflows/ci.yml)
+[![Deploy](https://github.com/sushildalavi/JobSense/actions/workflows/deploy.yml/badge.svg)](https://github.com/sushildalavi/JobSense/actions/workflows/deploy.yml)
 [![Python 3.11](https://img.shields.io/badge/Python-3.11-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111-green.svg)](https://fastapi.tiangolo.com)
 [![Next.js 15](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org)
@@ -13,7 +13,7 @@
 
 ## Overview
 
-ApplyFlow is a production-grade agentic AI system built for AI/ML professionals and ambitious job seekers. It combines **intelligent job discovery**, **semantic matching**, **AI-driven resume tailoring**, **email intelligence**, and **calendar automation** into a unified workflow — replacing scattered spreadsheets, browser bookmarks, and manual follow-ups with a fully automated, auditable pipeline.
+JobSense is a production-grade agentic AI system built for AI/ML professionals and ambitious job seekers. It combines **intelligent job discovery**, **semantic matching**, **AI-driven resume tailoring**, **email intelligence**, and **calendar automation** into a unified workflow — replacing scattered spreadsheets, browser bookmarks, and manual follow-ups with a fully automated, auditable pipeline.
 
 The system is built for engineers who want to see how frontier AI capabilities (LangGraph agents, pgvector embeddings, LLM-based entity extraction) connect into a real product — not just a demo.
 
@@ -148,8 +148,8 @@ All workflow executions are recorded in `agent_runs` with input/output, model us
 ### First-time setup (recommended)
 
 ```bash
-git clone https://github.com/sushildalavi/ApplyFlow.git
-cd ApplyFlow
+git clone https://github.com/sushildalavi/JobSense.git
+cd JobSense
 
 # Copy env file and fill in your credentials
 cp .env.example .env
@@ -180,7 +180,7 @@ make dev-worker  # Celery worker
 | pgAdmin (optional) | http://localhost:5050 |
 
 Demo credentials (after `make setup-dev`):
-- **Email:** `demo@applyflow.dev`
+- **Email:** `demo@jobsense.dev`
 - **Password:** `DemoPass123`
 
 ---
@@ -273,7 +273,7 @@ All endpoints live under `/api/v1/`. Interactive documentation at `/docs` (Swagg
 ## Project Structure
 
 ```
-ApplyFlow/
+JobSense/
 ├── apps/
 │   ├── api/                      # FastAPI backend
 │   │   ├── alembic/              # Database migrations

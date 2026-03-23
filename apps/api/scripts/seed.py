@@ -64,7 +64,7 @@ def days_from_now(n: int) -> datetime:
 # Demo data constants
 # ---------------------------------------------------------------------------
 
-DEMO_EMAIL = "demo@applyflow.dev"
+DEMO_EMAIL = "demo@jobsense.dev"
 DEMO_PASSWORD = "DemoPass123"
 
 SKILLS = [
@@ -634,7 +634,7 @@ async def seed(session: AsyncSession) -> None:
         user_id=user.id,
         name="Alex Chen — Master Resume 2026",
         raw_text=(
-            "ALEX CHEN\nSenior ML Engineer\nalex@applyflow.dev | linkedin.com/in/alex-chen-ml\n\n"
+            "ALEX CHEN\nSenior ML Engineer\nalex@jobsense.dev | linkedin.com/in/alex-chen-ml\n\n"
             "EXPERIENCE\n\n"
             "Senior ML Engineer — Acme AI (2022–Present)\n"
             "• Built real-time recommendation system serving 50M daily requests at p99 < 10ms\n"
@@ -650,7 +650,7 @@ async def seed(session: AsyncSession) -> None:
         ),
         parsed_data={
             "name": "Alex Chen",
-            "contact": {"email": "alex@applyflow.dev"},
+            "contact": {"email": "alex@jobsense.dev"},
             "education": [
                 {"degree": "MS CS", "school": "Stanford University", "year": 2020},
                 {"degree": "BS CS", "school": "UC Berkeley", "year": 2018},

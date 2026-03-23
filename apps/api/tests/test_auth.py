@@ -18,7 +18,7 @@ class TestRegister:
         resp = await client.post(
             "/api/v1/auth/register",
             json={
-                "email": "newuser@applyflow.dev",
+                "email": "newuser@jobsense.dev",
                 "password": "SecurePass9",
                 "full_name": "New User",
             },
@@ -45,7 +45,7 @@ class TestRegister:
         resp = await client.post(
             "/api/v1/auth/register",
             json={
-                "email": "weak@applyflow.dev",
+                "email": "weak@jobsense.dev",
                 "password": "NoDigitsHere",
                 "full_name": "Weak Pass",
             },
@@ -83,7 +83,7 @@ class TestLogin:
         """Unknown email returns 401 (not 404, to prevent user enumeration)."""
         resp = await client.post(
             "/api/v1/auth/login",
-            json={"email": "nobody@applyflow.dev", "password": "SomePass1"},
+            json={"email": "nobody@jobsense.dev", "password": "SomePass1"},
         )
         assert resp.status_code == 401
 

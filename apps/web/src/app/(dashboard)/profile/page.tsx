@@ -19,7 +19,7 @@ import {
 } from 'lucide-react'
 import apiClient from '@/lib/api'
 import { API_ROUTES, QUERY_KEYS } from '@/lib/constants'
-import type { Profile, RemotePreference, SeniorityLevel } from '@applyflow/types'
+import type { Profile, RemotePreference, SeniorityLevel } from '@jobsense/types'
 import { PageHeader } from '@/components/common/page-header'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'

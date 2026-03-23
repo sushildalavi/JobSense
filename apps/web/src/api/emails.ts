@@ -1,4 +1,4 @@
-import type { EmailThread, EmailClassification } from '@applyflow/types'
+import type { EmailThread, EmailClassification } from '@jobsense/types'
 import apiClient from '@/lib/api'
 import { API_ROUTES } from '@/lib/constants'
 

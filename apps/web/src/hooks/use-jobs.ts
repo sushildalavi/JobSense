@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import type { JobFilter } from '@applyflow/types'
+import type { JobFilter } from '@jobsense/types'
 import { getJobsApi, getJobByIdApi, shortlistJobApi, syncJobsApi } from '@/api/jobs'
 import { QUERY_KEYS } from '@/lib/constants'
 import { toast } from 'sonner'

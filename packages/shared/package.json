@@ -1,5 +1,5 @@
 {
-  "name": "@applyflow/shared",
+  "name": "@jobsense/shared",
   "version": "0.1.0",
   "private": true,
   "main": "./dist/index.js",
@@ -16,7 +16,7 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@applyflow/types": "workspace:*"
+    "@jobsense/types": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.19.37",

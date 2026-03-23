@@ -30,14 +30,14 @@ jobs:
 
       - name: Build packages
         run: |
-          pnpm --filter @applyflow/types build
-          pnpm --filter @applyflow/shared build
+          pnpm --filter @jobsense/types build
+          pnpm --filter @jobsense/shared build
 
       - name: Type check
-        run: pnpm --filter @applyflow/web check
+        run: pnpm --filter @jobsense/web check
 
       - name: Lint
-        run: pnpm --filter @applyflow/web lint
+        run: pnpm --filter @jobsense/web lint
 
   # ─── Frontend Build ──────────────────────────────────────────────────────────
   web-build:
@@ -62,9 +62,9 @@ jobs:
 
       - name: Build all packages and web app
         run: |
-          pnpm --filter @applyflow/types build
-          pnpm --filter @applyflow/shared build
-          pnpm --filter @applyflow/web build
+          pnpm --filter @jobsense/types build
+          pnpm --filter @jobsense/shared build
+          pnpm --filter @jobsense/web build
 
   # ─── API Lint ────────────────────────────────────────────────────────────────
   api-lint:
@@ -101,9 +101,9 @@ jobs:
       postgres:
         image: pgvector/pgvector:pg16
         env:
-          POSTGRES_USER: applyflow
-          POSTGRES_PASSWORD: applyflow
-          POSTGRES_DB: applyflow_test
+          POSTGRES_USER: jobsense
+          POSTGRES_PASSWORD: jobsense
+          POSTGRES_DB: jobsense_test
         ports:
           - 5432:5432
         options: >-
@@ -138,7 +138,7 @@ jobs:
       - name: Run migrations
         working-directory: apps/api
         env:
-          DATABASE_URL: postgresql://applyflow:applyflow@localhost:5432/applyflow_test
+          DATABASE_URL: postgresql://jobsense:jobsense@localhost:5432/jobsense_test
           REDIS_URL: redis://localhost:6379/0
           SECRET_KEY: test-secret-key-for-ci-only
         run: poetry run alembic upgrade head
@@ -146,7 +146,7 @@ jobs:
       - name: Run tests
         working-directory: apps/api
         env:
-          DATABASE_URL: postgresql://applyflow:applyflow@localhost:5432/applyflow_test
+          DATABASE_URL: postgresql://jobsense:jobsense@localhost:5432/jobsense_test
           REDIS_URL: redis://localhost:6379/0
           SECRET_KEY: test-secret-key-for-ci-only
           OPENAI_API_KEY: sk-test-placeholder

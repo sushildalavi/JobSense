@@ -5,7 +5,7 @@ import { RefreshCw, Calendar, Video, MapPin, Plus, ExternalLink } from 'lucide-r
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { getCalendarEventsApi, syncCalendarApi } from '@/api/calendar'
 import { QUERY_KEYS } from '@/lib/constants'
-import type { CalendarEvent } from '@applyflow/types'
+import type { CalendarEvent } from '@jobsense/types'
 import { PageHeader } from '@/components/common/page-header'
 import { EmptyState } from '@/components/common/empty-state'
 import { Button } from '@/components/ui/button'

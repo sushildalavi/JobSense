@@ -1,4 +1,4 @@
-import type { CalendarEvent } from '@applyflow/types'
+import type { CalendarEvent } from '@jobsense/types'
 import apiClient from '@/lib/api'
 import { API_ROUTES } from '@/lib/constants'
 

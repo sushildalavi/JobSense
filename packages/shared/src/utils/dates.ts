@@ -1,5 +1,5 @@
 /**
- * Date utility functions for ApplyFlow.
+ * Date utility functions for JobSense.
  * All functions are browser-safe (no server-only APIs).
  */
 

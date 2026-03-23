@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { ArrowUpDown, Trash2, Eye } from 'lucide-react'
-import type { ApplicationListItem, ApplicationStatus } from '@applyflow/types'
+import type { ApplicationListItem, ApplicationStatus } from '@jobsense/types'
 import {
   Table,
   TableBody,

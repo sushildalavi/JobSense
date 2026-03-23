@@ -1,5 +1,5 @@
 /**
- * String utility functions for ApplyFlow.
+ * String utility functions for JobSense.
  */
 
 export function truncate(str: string, maxLength: number): string {

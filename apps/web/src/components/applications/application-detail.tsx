@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { ExternalLink, MapPin } from 'lucide-react'
-import type { Application, ApplicationEvent } from '@applyflow/types'
+import type { Application, ApplicationEvent } from '@jobsense/types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -11,7 +11,7 @@ import { StatusBadge } from './status-badge'
 import { formatDate, formatRelativeDate } from '@/lib/utils'
 import { useUpdateApplication, useUpdateApplicationStatus } from '@/hooks/use-applications'
 import { STATUS_LABELS } from '@/lib/constants'
-import type { ApplicationStatus } from '@applyflow/types'
+import type { ApplicationStatus } from '@jobsense/types'
 
 interface ApplicationDetailProps {
   application: Application

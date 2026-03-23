@@ -30,7 +30,7 @@ from sqlalchemy.ext.asyncio import (
 # ---------------------------------------------------------------------------
 _raw_db_url = os.environ.get(
     "DATABASE_URL",
-    "postgresql://applyflow:applyflow@localhost:5432/applyflow_test",
+    "postgresql://jobsense:jobsense@localhost:5432/jobsense_test",
 )
 
 # Ensure we always use the asyncpg driver for tests.
@@ -144,7 +144,7 @@ async def test_user(async_session) -> dict:
     plain_password = "TestPass123"
 
     user_obj = User(
-        email="test@applyflow.dev",
+        email="test@jobsense.dev",
         hashed_password=get_password_hash(plain_password),
         full_name="Test User",
         is_active=True,

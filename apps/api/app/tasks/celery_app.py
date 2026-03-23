@@ -10,7 +10,7 @@ from app.core.config import settings
 
 # ── Celery app ─────────────────────────────────────────────────────────────────
 celery_app = Celery(
-    "applyflow",
+    "jobsense",
     broker=settings.REDIS_URL,
     backend=settings.REDIS_URL,
     include=[

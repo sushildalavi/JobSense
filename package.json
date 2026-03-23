@@ -1,8 +1,8 @@
 {
-  "name": "applyflow",
+  "name": "jobsense",
   "version": "0.1.0",
   "private": true,
-  "description": "ApplyFlow — Agentic AI Job Search Copilot",
+  "description": "JobSense — Agentic AI Job Search Copilot",
   "workspaces": [
     "apps/*",
     "packages/*"

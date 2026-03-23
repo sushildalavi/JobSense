@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts'
-import type { FunnelStage } from '@applyflow/types'
+import type { FunnelStage } from '@jobsense/types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { STATUS_LABELS } from '@/lib/constants'
 

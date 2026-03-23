@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { RefreshCw, SortAsc, Briefcase } from 'lucide-react'
-import type { JobFilter } from '@applyflow/types'
+import type { JobFilter } from '@jobsense/types'
 import { useJobs, useSyncJobs } from '@/hooks/use-jobs'
 import { JobCard } from '@/components/jobs/job-card'
 import { JobFilters } from '@/components/jobs/job-filters'

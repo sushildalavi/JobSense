@@ -56,7 +56,7 @@ export default function ResumesPage() {
           <EmptyState
             icon={FileUser}
             title="No resumes yet"
-            description="Upload your master resume to get started. ApplyFlow will parse it and create tailored versions for each job."
+            description="Upload your master resume to get started. JobSense will parse it and create tailored versions for each job."
             action={{ label: 'Upload Resume', onClick: () => setShowUpload(true) }}
           />
         </div>

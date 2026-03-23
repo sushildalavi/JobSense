@@ -60,7 +60,7 @@ export default function RegisterPage() {
         password: data.password,
       })
       await login(data.email, data.password)
-      toast.success('Account created! Welcome to ApplyFlow.')
+      toast.success('Account created! Welcome to JobSense.')
       router.push('/dashboard')
     } catch (error: unknown) {
       const err = error as { message?: string }

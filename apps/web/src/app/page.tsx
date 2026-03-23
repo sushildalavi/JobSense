@@ -95,7 +95,7 @@ export default function LandingPage() {
             <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
               <Zap className="w-4 h-4 text-white" />
             </div>
-            <span className="text-lg font-bold text-gradient">ApplyFlow</span>
+            <span className="text-lg font-bold text-gradient">JobSense</span>
           </div>
           <div className="flex items-center gap-3">
             <Button variant="ghost" asChild>
@@ -121,7 +121,7 @@ export default function LandingPage() {
           Job Search Copilot
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-10">
-          ApplyFlow intelligently discovers jobs, tailors your resume, and tracks every application —
+          JobSense intelligently discovers jobs, tailors your resume, and tracks every application —
           all on autopilot. Land your dream job faster with less effort.
         </p>
         <div className="flex items-center justify-center gap-4 flex-wrap">
@@ -156,7 +156,7 @@ export default function LandingPage() {
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Everything you need to land the job</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            From discovery to offer, ApplyFlow covers every step of your job search journey.
+            From discovery to offer, JobSense covers every step of your job search journey.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -178,7 +178,7 @@ export default function LandingPage() {
       {/* How it works */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 py-20">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">How ApplyFlow works</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">How JobSense works</h2>
           <p className="text-muted-foreground">Three simple steps to supercharge your job search</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -204,7 +204,7 @@ export default function LandingPage() {
             Ready to automate your job search?
           </h2>
           <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join thousands of job seekers using ApplyFlow to land interviews faster.
+            Join thousands of job seekers using JobSense to land interviews faster.
           </p>
           <Button size="xl" asChild className="shadow-glow">
             <Link href="/register">
@@ -222,10 +222,10 @@ export default function LandingPage() {
             <div className="w-6 h-6 rounded-md bg-gradient-primary flex items-center justify-center">
               <Zap className="w-3 h-3 text-white" />
             </div>
-            <span className="text-sm font-semibold text-gradient">ApplyFlow</span>
+            <span className="text-sm font-semibold text-gradient">JobSense</span>
           </div>
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} ApplyFlow. All rights reserved.
+            &copy; {new Date().getFullYear()} JobSense. All rights reserved.
           </p>
         </div>
       </footer>

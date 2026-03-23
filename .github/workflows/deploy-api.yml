@@ -30,7 +30,7 @@ jobs:
         working-directory: apps/api
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up --service applyflow-api
+        run: railway up --service jobsense-api
 
       - name: Run migrations
         env:

@@ -1,5 +1,5 @@
 {
-  "name": "@applyflow/config",
+  "name": "@jobsense/config",
   "version": "0.1.0",
   "private": true,
   "exports": {

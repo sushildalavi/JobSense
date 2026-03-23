@@ -56,7 +56,7 @@ export default function LoginPage() {
           </div>
           <h1 className="text-2xl font-bold text-center text-foreground">Welcome back</h1>
           <p className="text-sm text-muted-foreground text-center">
-            Sign in to your ApplyFlow account
+            Sign in to your JobSense account
           </p>
         </CardHeader>
         <CardContent className="space-y-5">

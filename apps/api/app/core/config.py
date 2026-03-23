@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     )
 
     # ── Database ──────────────────────────────────────────────────────────────
-    DATABASE_URL: str = "postgresql://applyflow:applyflow@localhost:5432/applyflow"
+    DATABASE_URL: str = "postgresql://jobsense:jobsense@localhost:5432/jobsense"
 
     @computed_field  # type: ignore[misc]
     @property
@@ -59,7 +59,7 @@ class Settings(BaseSettings):
     AWS_ACCESS_KEY_ID: str = ""
     AWS_SECRET_ACCESS_KEY: str = ""
     AWS_REGION: str = "us-east-1"
-    S3_BUCKET_NAME: str = "applyflow-documents"
+    S3_BUCKET_NAME: str = "jobsense-documents"
 
     # ── Observability ─────────────────────────────────────────────────────────
     SENTRY_DSN: Optional[str] = None

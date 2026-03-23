@@ -1,7 +1,7 @@
 'use client'
 
 import { Mail, Users, ExternalLink } from 'lucide-react'
-import type { EmailThread, EmailClassification } from '@applyflow/types'
+import type { EmailThread, EmailClassification } from '@jobsense/types'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { formatRelativeDate } from '@/lib/utils'

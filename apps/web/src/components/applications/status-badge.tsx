@@ -1,4 +1,4 @@
-import type { ApplicationStatus } from '@applyflow/types'
+import type { ApplicationStatus } from '@jobsense/types'
 import { STATUS_COLORS, STATUS_LABELS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 

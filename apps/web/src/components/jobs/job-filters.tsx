@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Search, X, SlidersHorizontal } from 'lucide-react'
-import type { JobFilter, EmploymentType, SeniorityLevel } from '@applyflow/types'
+import type { JobFilter, EmploymentType, SeniorityLevel } from '@jobsense/types'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'

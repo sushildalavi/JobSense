@@ -1,5 +1,5 @@
 -- =============================================================================
--- ApplyFlow — PostgreSQL Initialization Script
+-- JobSense — PostgreSQL Initialization Script
 -- Runs once on first container start. Sets up extensions and grants.
 -- =============================================================================
 
@@ -17,7 +17,7 @@ CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 CREATE EXTENSION IF NOT EXISTS "btree_gin";
 
 -- ─── Privileges ──────────────────────────────────────────────────────────────
-GRANT ALL PRIVILEGES ON DATABASE applyflow TO applyflow;
+GRANT ALL PRIVILEGES ON DATABASE jobsense TO jobsense;
 
 -- ─── Performance Tuning ──────────────────────────────────────────────────────
 -- These are safe defaults for a development instance.  Adjust for production.
@@ -37,8 +37,8 @@ SELECT pg_reload_conf();
 -- Create a test database so CI migrations can run against an isolated DB.
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'applyflow_test') THEN
-        PERFORM dblink_exec('dbname=postgres', 'CREATE DATABASE applyflow_test OWNER applyflow');
+    IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'jobsense_test') THEN
+        PERFORM dblink_exec('dbname=postgres', 'CREATE DATABASE jobsense_test OWNER jobsense');
     END IF;
 EXCEPTION WHEN OTHERS THEN
     -- dblink may not be available; test DB creation is optional

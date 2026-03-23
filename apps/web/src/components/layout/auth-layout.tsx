@@ -22,7 +22,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
             <Zap className="w-4 h-4 text-white" />
           </div>
           <span className="text-lg font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
-            ApplyFlow
+            JobSense
           </span>
         </Link>
       </header>
@@ -36,7 +36,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
 
       {/* Footer */}
       <footer className="relative z-10 py-6 text-center text-xs text-muted-foreground">
-        &copy; {new Date().getFullYear()} ApplyFlow. Your AI-powered job search copilot.
+        &copy; {new Date().getFullYear()} JobSense. Your AI-powered job search copilot.
       </footer>
     </div>
   )

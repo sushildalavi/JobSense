@@ -1,4 +1,4 @@
-import type { User, TokenResponse, LoginRequest, RegisterRequest } from '@applyflow/types'
+import type { User, TokenResponse, LoginRequest, RegisterRequest } from '@jobsense/types'
 import apiClient from '@/lib/api'
 import { API_ROUTES } from '@/lib/constants'
 

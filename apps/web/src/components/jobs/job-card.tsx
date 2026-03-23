@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { MapPin, Bookmark, ExternalLink, Building2, Clock } from 'lucide-react'
 import Link from 'next/link'
-import type { JobListItem } from '@applyflow/types'
+import type { JobListItem } from '@jobsense/types'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'

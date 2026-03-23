@@ -1,5 +1,5 @@
 """
-ApplyFlow API — main application entry point.
+JobSense API — main application entry point.
 
 Bootstraps FastAPI with lifespan, middleware, routers, and exception handlers.
 """
@@ -32,7 +32,7 @@ logger = structlog.get_logger(__name__)
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Startup and shutdown hooks."""
     configure_logging(settings.LOG_LEVEL)
-    logger.info("Starting ApplyFlow API", environment=settings.ENVIRONMENT)
+    logger.info("Starting JobSense API", environment=settings.ENVIRONMENT)
 
     # Database
     await init_db()
@@ -62,7 +62,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # Cleanup
     await app.state.redis.aclose()
     logger.info("Redis connection pool closed")
-    logger.info("ApplyFlow API shutdown complete")
+    logger.info("JobSense API shutdown complete")
 
 
 # ─── Application factory ──────────────────────────────────────────────────────
@@ -70,7 +70,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="ApplyFlow API",
+        title="JobSense API",
         description="Agentic AI Job Search Copilot — Backend API",
         version="0.1.0",
         docs_url="/docs",

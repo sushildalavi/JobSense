@@ -1,25 +1,25 @@
 version: "3.9"
 
 # =============================================================================
-# ApplyFlow — Docker Compose (Production-like dev stack)
+# JobSense — Docker Compose (Production-like dev stack)
 # =============================================================================
 
 services:
   # ─── PostgreSQL ─────────────────────────────────────────────────────────────
   postgres:
     image: pgvector/pgvector:pg16
-    container_name: applyflow-postgres
+    container_name: jobsense-postgres
     environment:
-      POSTGRES_USER: applyflow
-      POSTGRES_PASSWORD: applyflow
-      POSTGRES_DB: applyflow
+      POSTGRES_USER: jobsense
+      POSTGRES_PASSWORD: jobsense
+      POSTGRES_DB: jobsense
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U applyflow -d applyflow"]
+      test: ["CMD-SHELL", "pg_isready -U jobsense -d jobsense"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -28,7 +28,7 @@ services:
   # ─── Redis ──────────────────────────────────────────────────────────────────
   redis:
     image: redis:7-alpine
-    container_name: applyflow-redis
+    container_name: jobsense-redis
     ports:
       - "6379:6379"
     volumes:
@@ -46,11 +46,11 @@ services:
     build:
       context: ./apps/api
       dockerfile: Dockerfile
-    container_name: applyflow-api
+    container_name: jobsense-api
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql://applyflow:applyflow@postgres:5432/applyflow
+      DATABASE_URL: postgresql://jobsense:jobsense@postgres:5432/jobsense
       REDIS_URL: redis://redis:6379/0
       ENVIRONMENT: development
     env_file:
@@ -70,9 +70,9 @@ services:
     build:
       context: ./apps/api
       dockerfile: Dockerfile
-    container_name: applyflow-worker
+    container_name: jobsense-worker
     environment:
-      DATABASE_URL: postgresql://applyflow:applyflow@postgres:5432/applyflow
+      DATABASE_URL: postgresql://jobsense:jobsense@postgres:5432/jobsense
       REDIS_URL: redis://redis:6379/0
     env_file:
       - .env
@@ -91,9 +91,9 @@ services:
     build:
       context: ./apps/api
       dockerfile: Dockerfile
-    container_name: applyflow-beat
+    container_name: jobsense-beat
     environment:
-      DATABASE_URL: postgresql://applyflow:applyflow@postgres:5432/applyflow
+      DATABASE_URL: postgresql://jobsense:jobsense@postgres:5432/jobsense
       REDIS_URL: redis://redis:6379/0
     env_file:
       - .env
@@ -109,7 +109,7 @@ services:
     build:
       context: ./apps/web
       dockerfile: Dockerfile
-    container_name: applyflow-web
+    container_name: jobsense-web
     ports:
       - "3000:3000"
     environment:
@@ -123,7 +123,7 @@ services:
   # ─── Flower (Celery monitoring) ──────────────────────────────────────────────
   flower:
     image: mher/flower:2.0
-    container_name: applyflow-flower
+    container_name: jobsense-flower
     environment:
       CELERY_BROKER_URL: redis://redis:6379/0
       FLOWER_PORT: 5555
@@ -139,4 +139,4 @@ volumes:
 
 networks:
   default:
-    name: applyflow-network
+    name: jobsense-network

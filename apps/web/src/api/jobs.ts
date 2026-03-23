@@ -1,4 +1,4 @@
-import type { Job, JobListItem, JobFilter, JobMatch } from '@applyflow/types'
+import type { Job, JobListItem, JobFilter, JobMatch } from '@jobsense/types'
 import apiClient from '@/lib/api'
 import { API_ROUTES } from '@/lib/constants'
 

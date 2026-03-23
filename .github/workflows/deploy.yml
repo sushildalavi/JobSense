@@ -26,13 +26,13 @@ jobs:
         working-directory: apps/api
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up --service applyflow-api --detach
+        run: railway up --service jobsense-api --detach
 
       - name: Deploy Worker service
         working-directory: apps/api
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up --service applyflow-worker --detach
+        run: railway up --service jobsense-worker --detach
 
       - name: Run database migrations
         working-directory: apps/api
@@ -68,8 +68,8 @@ jobs:
 
       - name: Build packages
         run: |
-          pnpm --filter @applyflow/types build
-          pnpm --filter @applyflow/shared build
+          pnpm --filter @jobsense/types build
+          pnpm --filter @jobsense/shared build
 
       - name: Deploy to Vercel (Production)
         uses: amondnet/vercel-action@v25

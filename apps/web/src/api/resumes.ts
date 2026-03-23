@@ -1,4 +1,4 @@
-import type { MasterResume, ResumeVersion, TailoringRequest } from '@applyflow/types'
+import type { MasterResume, ResumeVersion, TailoringRequest } from '@jobsense/types'
 import apiClient from '@/lib/api'
 import { API_ROUTES } from '@/lib/constants'
 

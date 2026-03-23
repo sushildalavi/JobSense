@@ -1,4 +1,4 @@
-import type { AnalyticsSummary, DashboardStats } from '@applyflow/types'
+import type { AnalyticsSummary, DashboardStats } from '@jobsense/types'
 import apiClient from '@/lib/api'
 import { API_ROUTES } from '@/lib/constants'
 

@@ -12,8 +12,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'ApplyFlow — AI Job Search Copilot',
-    template: '%s | ApplyFlow',
+    default: 'JobSense — AI Job Search Copilot',
+    template: '%s | JobSense',
   },
   description: 'Your AI-powered job search copilot. Discover, apply, and track jobs automatically.',
   keywords: ['job search', 'AI', 'job tracker', 'resume', 'applications'],

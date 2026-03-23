@@ -3,7 +3,7 @@ import type {
   ApplicationListItem,
   ApplicationStatus,
   ApplicationEvent,
-} from '@applyflow/types'
+} from '@jobsense/types'
 import apiClient from '@/lib/api'
 import { API_ROUTES } from '@/lib/constants'
 

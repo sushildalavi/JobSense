@@ -1,4 +1,4 @@
-"""Initial schema — creates all ApplyFlow tables, enums, and indexes.
+"""Initial schema — creates all JobSense tables, enums, and indexes.
 
 Revision ID: 001
 Revises:

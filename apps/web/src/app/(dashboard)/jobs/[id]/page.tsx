@@ -322,7 +322,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
           <div>
             <h3 className="font-semibold text-foreground">Ready to apply?</h3>
             <p className="text-sm text-muted-foreground mt-1">
-              Let ApplyFlow tailor your resume and track this application.
+              Let JobSense tailor your resume and track this application.
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">

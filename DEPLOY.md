@@ -1,4 +1,4 @@
-# ApplyFlow — Deployment Guide
+# JobSense — Deployment Guide
 
 This guide deploys:
 - **Frontend** → [Vercel](https://vercel.com) (free tier)
@@ -36,7 +36,7 @@ This guide deploys:
 ## Step 2 — Deploy the API on Railway
 
 1. In the same Railway project, click **"+ New Service"** → **"GitHub Repo"**
-2. Connect your repo → select `ApplyFlow`
+2. Connect your repo → select `JobSense`
 3. **Root directory:** `apps/api`
 4. Railway auto-detects `railway.toml` — no extra config needed
 5. Add these **environment variables** in the service's Variables tab:
@@ -58,7 +58,7 @@ This guide deploys:
 | `FRONTEND_URL` | `https://YOUR-VERCEL-DOMAIN.vercel.app` (set after Step 3) |
 
 6. Click **Deploy** — Railway builds and starts the API
-7. Copy your Railway API domain (e.g. `applyflow-api-production.up.railway.app`)
+7. Copy your Railway API domain (e.g. `jobsense-api-production.up.railway.app`)
 
 ---
 
@@ -71,7 +71,7 @@ This guide deploys:
    celery -A app.tasks.celery_app.celery_app worker --loglevel=info -Q ingestion,matching,ai,email,calendar,default --concurrency=2
    ```
 4. Add the **same environment variables** as Step 2
-5. Name this service `applyflow-worker`
+5. Name this service `jobsense-worker`
 
 ---
 

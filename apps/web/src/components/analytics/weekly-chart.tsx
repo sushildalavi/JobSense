@@ -10,7 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
-import type { WeeklyStat } from '@applyflow/types'
+import type { WeeklyStat } from '@jobsense/types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface WeeklyChartProps {

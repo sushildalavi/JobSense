@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import type { ApplicationStatus } from '@applyflow/types'
+import type { ApplicationStatus } from '@jobsense/types'
 import {
   getApplicationsApi,
   getApplicationByIdApi,
