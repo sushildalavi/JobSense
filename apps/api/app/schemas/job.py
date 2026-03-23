@@ -119,6 +119,6 @@ class JobSearchRequest(BaseModel):
 class JobRankingResponse(BaseModel):
     """Ranked list of jobs with match scores."""
 
-    jobs: List[JobListItem]
+    items: List[JobListItem]
     total: int
     query: Optional[str] = None

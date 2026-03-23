@@ -23,7 +23,7 @@ class TestListJobs:
         assert resp.status_code == 200, resp.text
         body = resp.json()
         # Accept either a bare list or a paginated envelope
-        items = body if isinstance(body, list) else body.get("items", body.get("results", []))
+        items = body if isinstance(body, list) else body.get("items", body.get("jobs", body.get("results", [])))
         assert isinstance(items, list)
 
     async def test_list_jobs_with_data(
@@ -36,7 +36,7 @@ class TestListJobs:
         resp = await client.get("/api/v1/jobs/", headers=auth_headers)
         assert resp.status_code == 200, resp.text
         body = resp.json()
-        items = body if isinstance(body, list) else body.get("items", body.get("results", body))
+        items = body if isinstance(body, list) else body.get("items", body.get("jobs", body.get("results", [])))
 
         ids = [str(j["id"]) for j in items]
         assert test_job["id"] in ids, f"Expected {test_job['id']} in {ids}"
@@ -74,7 +74,7 @@ class TestListJobs:
         resp = await client.get("/api/v1/jobs/?limit=2&offset=0", headers=auth_headers)
         assert resp.status_code == 200
         body = resp.json()
-        items = body if isinstance(body, list) else body.get("items", body.get("results", body))
+        items = body if isinstance(body, list) else body.get("items", body.get("jobs", body.get("results", [])))
         assert len(items) <= 2
 
     async def test_list_jobs_filter_by_status(

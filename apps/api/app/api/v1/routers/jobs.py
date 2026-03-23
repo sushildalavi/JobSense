@@ -69,7 +69,7 @@ async def list_jobs(
         current_user.id, filters, skip=pagination.skip, limit=pagination.limit
     )
     return JobRankingResponse(
-        jobs=[JobListItem.model_validate(j) for j in jobs],
+        items=[JobListItem.model_validate(j) for j in jobs],
         total=total,
     )
 
@@ -102,7 +102,7 @@ async def semantic_search(
         min_score=min_score,
     )
     return JobRankingResponse(
-        jobs=[JobListItem.model_validate(j) for j in jobs],
+        items=[JobListItem.model_validate(j) for j in jobs],
         total=len(jobs),
         query=q,
     )

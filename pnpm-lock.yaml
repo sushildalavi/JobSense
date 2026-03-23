@@ -20,15 +20,15 @@ importers:
 
   apps/web:
     dependencies:
-      '@applyflow/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
-      '@applyflow/types':
-        specifier: workspace:*
-        version: link:../../packages/types
       '@hookform/resolvers':
         specifier: ^3.9.0
         version: 3.10.0(react-hook-form@7.71.2(react@18.3.1))
+      '@jobsense/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@jobsense/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@radix-ui/react-accordion':
         specifier: ^1.2.1
         version: 1.2.12(@types/react-dom@18.3.7(@types/react@18.3.28))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -135,7 +135,7 @@ importers:
         specifier: ^5.0.0
         version: 5.0.12(@types/react@18.3.28)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
     devDependencies:
-      '@applyflow/config':
+      '@jobsense/config':
         specifier: workspace:*
         version: link:../../packages/config
       '@types/node':
@@ -170,7 +170,7 @@ importers:
 
   packages/shared:
     dependencies:
-      '@applyflow/types':
+      '@jobsense/types':
         specifier: workspace:*
         version: link:../types
     devDependencies:
