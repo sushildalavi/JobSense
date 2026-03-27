@@ -1,0 +1,160 @@
+\documentclass[letterpaper,10pt]{article}
+
+\usepackage[margin=0.58in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\input{glyphtounicode}
+\pdfgentounicode=1
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\raggedbottom
+\raggedright
+\urlstyle{same}
+
+% Section formatting
+\titleformat{\section}
+  {\large\bfseries}
+  {}
+  {0em}
+  {}
+  [\vspace{1pt}\hrule\vspace{3pt}]
+\titlespacing*{\section}{0pt}{6pt}{3pt}
+
+% Bullet spacing
+\setlist[itemize]{
+  leftmargin=1.1em,
+  itemsep=0.5pt,
+  topsep=2pt,
+  parsep=0pt,
+  partopsep=0pt
+}
+
+% Work/Education entry: {Company}{Dates}{Role}{Location}
+\newcommand{\resumeSubheading}[4]{%
+  \vspace{2pt}%
+  \textbf{#1} \hfill {#2} \\[-1pt]
+  \textit{#3} \hfill \textit{#4}%
+  \vspace{1pt}%
+}
+
+% Project entry: {Title}{Stack}{URL}
+\newcommand{\resumeProject}[3]{%
+  \vspace{2pt}%
+  \textbf{#1} \hfill \href{#3}{\textit{GitHub}} \\[-1pt]
+  \textit{#2}%
+  \vspace{1pt}%
+}
+
+\begin{document}
+
+% ── HEADER ──────────────────────────────────────────────────────────────────
+\begin{center}
+  {\LARGE\textbf{Sushil Dalavi}}\\[4pt]
+  Los Angeles, CA \,|\, +1 (213) 691-3794 \,|\,
+  \href{mailto:sdalavi@usc.edu}{sdalavi@usc.edu} \,|\,
+  \href{https://linkedin.com/in/sushildalavi}{linkedin.com/in/sushildalavi} \,|\,
+  \href{https://github.com/sushildalavi}{github.com/sushildalavi}
+\end{center}
+
+% ── EDUCATION ───────────────────────────────────────────────────────────────
+\section{Education}
+
+\resumeSubheading
+  {University of Southern California}{Aug 2024 -- May 2026}
+  {M.S. in Computer Science}{Los Angeles, CA}
+
+\vspace{4pt}
+
+\resumeSubheading
+  {University of Mumbai}{Jun 2019 -- May 2023}
+  {B.E. in Computer Engineering}{Mumbai, India}
+
+% ── TECHNICAL SKILLS ────────────────────────────────────────────────────────
+\section{Technical Skills}
+
+\textbf{Languages:} Python, C++, JavaScript, TypeScript, SQL, Bash \\
+\textbf{ML/AI:} PyTorch, TensorFlow, JAX, scikit-learn, Hugging Face Transformers, BERT, ClinicalBERT, Whisper, GPT-4o, Claude, LLaMA, LangChain, LangGraph \\
+\textbf{LLM \& GenAI:} Fine-Tuning, LoRA/QLoRA, PEFT, RLHF, RAG, Prompt Engineering, Function Calling, SSE Streaming, LLM-as-Judge, vLLM \\
+\textbf{Data \& Retrieval:} NumPy, Pandas, BM25, FAISS, pgvector, Qdrant, Pinecone, Elasticsearch, Apache Spark, Apache Kafka \\
+\textbf{Backend/Frontend:} FastAPI, REST APIs, gRPC, SQLAlchemy, PostgreSQL, Redis, Celery, React, Next.js, Tailwind CSS \\
+\textbf{MLOps \& DevOps:} MLflow, DVC, Weights \& Biases, Docker, Kubernetes, GitHub Actions, Jenkins, Airflow, Terraform \\
+\textbf{Cloud \& Observability:} AWS (S3, Glue, Athena, SageMaker), GCP, Prometheus, Grafana, Tableau
+
+% ── WORK EXPERIENCE ─────────────────────────────────────────────────────────
+\section{Work Experience}
+
+\resumeSubheading
+  {USC Annenberg Norman Lear Center}{Jun 2025 -- Present}
+  {AI Engineer}{Los Angeles, CA (Remote)}
+\begin{itemize}
+  \item Cut ETL turnaround by \textbf{45\%} by parallelizing \textbf{AWS Glue} jobs with partition-based splits and switching storage to \textbf{Parquet on S3}, enabling \textbf{Athena} to skip irrelevant scans across \textbf{50M+} multilingual social media records.
+  \item Built a \textbf{hybrid RAG} pipeline over \textbf{10M+} YouTube comments by combining \textbf{BM25} lexical search with \textbf{OpenAI text-embedding-3-large} dense retrieval, reranked via \textbf{MiniLM cross-encoder}, and synthesized through \textbf{GPT-4o-mini} for evidence-grounded media analysis.
+  \item Reduced reporting cycles by \textbf{45\%} by designing virality signal metrics and shipping \textbf{Athena}-backed \textbf{Tableau} dashboards for partners at \textbf{Oxford, UPenn, and the World Bank}.
+\end{itemize}
+
+\vspace{2pt}
+
+\resumeSubheading
+  {Reliance Jio Platforms Limited}{Dec 2023 -- Jul 2024}
+  {Software Engineer}{Navi Mumbai, India}
+\begin{itemize}
+  \item Improved demand forecasting efficiency by \textbf{25\%} across \textbf{5 business units} by building \textbf{REST microservices} over \textbf{TFT, CatBoost, and LSTM} models, backed by \textbf{Hive SQL} feature stores and \textbf{SAP HANA}.
+  \item Lifted radiology anomaly detection recall by \textbf{35\%} by training \textbf{ResNet-50} and \textbf{DenseNet-121} classifiers on medical imaging data and shipping inference pipelines via \textbf{Docker + Jenkins CI/CD}.
+  \item Reduced \textbf{p95 latency by 30\%} and improved intent accuracy by \textbf{20\%} by deploying quantized \textbf{BERT} and \textbf{GPT-2} as batched \textbf{REST inference services} inside \textbf{Haptik's} conversational AI platform.
+\end{itemize}
+
+\vspace{2pt}
+
+\resumeSubheading
+  {DevTown}{Jun 2021 -- Aug 2021}
+  {Data Science Intern}{Mumbai, India (Remote)}
+\begin{itemize}
+  \item Extracted engagement signals from student interaction logs using \textbf{SQL} and \textbf{Python (Pandas, NumPy)}, identifying behavioral patterns that directly shaped personalization logic for content recommendations.
+  \item Built and validated \textbf{XGBoost, Random Forest, and Logistic Regression} models for student performance forecasting, delivering insights that influenced curriculum prioritization across active courses.
+\end{itemize}
+
+% ── TECHNICAL PROJECTS ──────────────────────────────────────────────────────
+\section{Technical Projects}
+
+\resumeProject
+  {ScribeAI: AI-Powered Clinical Documentation System}
+  {Python, FastAPI, PostgreSQL, Redis, Celery, Qdrant, React, Docker, MLflow, DVC}
+  {https://github.com/sushildalavi/ScribeAI}
+\begin{itemize}
+  \item Achieved \textbf{$<$2s time-to-first-token} on SOAP note generation by streaming \textbf{Whisper} ASR output through \textbf{GPT-4o} via \textbf{Server-Sent Events (SSE)}, eliminating blocking wait times in the transcription-to-note pipeline.
+  \item Built an async \textbf{FastAPI} backend with \textbf{PostgreSQL}, \textbf{Redis} caching, and \textbf{Celery} task queues, supporting concurrent multi-role access via \textbf{JWT + RBAC} for Physicians, Nurses, and Admins.
+  \item Fine-tuned \textbf{GPT-4o-mini} on \textbf{10,000+} de-identified clinical dialogues using \textbf{LoRA/QLoRA} and \textbf{PEFT}, tracked via \textbf{MLflow + DVC}, and augmented with \textbf{RAG} over patient history using \textbf{ClinicalBERT} embeddings indexed in \textbf{Qdrant}.
+\end{itemize}
+
+\vspace{2pt}
+
+\resumeProject
+  {ScholarRAG: Scholarly Retrieval-Augmented Generation System}
+  {Python, FastAPI, React, PostgreSQL, pgvector, Docker}
+  {https://github.com/sushildalavi/ScholarRAG-A-Retrieval-Augmented-LLM-Assistant-for-Research-Paper-Discovery-and-Synthesis}
+\begin{itemize}
+  \item Built a production \textbf{RAG} system for scientific literature QA using \textbf{FastAPI}, \textbf{React}, \textbf{PostgreSQL + pgvector}, and \textbf{Docker}, supporting real-time paper retrieval, DOI-based citation tracking, and conversational synthesis.
+  \item Reduced candidate redundancy by \textbf{{\raise.17ex\hbox{$\scriptstyle\sim$}}50\%} by fanning out async requests across \textbf{7 scholarly APIs} (Semantic Scholar, arXiv, CrossRef) with \textbf{DOI-based deduplication} before merging results.
+  \item Improved \textbf{MRR by 21.8\%} and \textbf{nDCG@10 by 18.0\%} by replacing single-mode retrieval with \textbf{hybrid BM25 + dense search} and \textbf{cross-encoder reranking}; \textbf{LLM-as-Judge} eval pipeline reached \textbf{0.78 faithfulness}.
+\end{itemize}
+
+\vspace{2pt}
+
+\resumeProject
+  {JobSense: Agentic AI Job Search Operating System}
+  {FastAPI, Next.js, PostgreSQL, pgvector, Redis, Celery, LangGraph, Docker}
+  {https://github.com/sushildalavi/JobSense}
+\begin{itemize}
+  \item Built a full-stack agentic job search platform in \textbf{FastAPI + Next.js}, backed by \textbf{PostgreSQL + pgvector} and \textbf{Redis}, automating the end-to-end lifecycle from multi-source scraping to semantic matching, resume tailoring, and tracking.
+  \item Engineered \textbf{4 LangGraph agentic workflows} for job discovery, semantic matching, resume tailoring, and email classification using \textbf{GPT-4o} and \textbf{Claude Haiku}, with an immutable audit log and per-run token cost tracking.
+  \item Distributed background workloads across \textbf{5 Celery queues} (ingestion, matching, AI, email, calendar) and integrated \textbf{Gmail API}, \textbf{Google Calendar API}, and \textbf{Apify} actors for end-to-end pipeline automation.
+\end{itemize}
+
+\end{document}
